@@ -1,0 +1,50 @@
+[tool.black]
+line-length = 79
+target-version = ['py311']
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Pynomic"
+version = "0.0.1"
+authors = [{name = "Fiore Juan M.", email = "fiorejuanm@mi.unc.edu.ar"}]
+license = {text = "The MIT License"}
+readme = "README.md"
+description = "Implementation of Drone images analisys"
+keywords = ["UAV", "RGB", "Multispectral", "Pipeline"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+urls = {Homepage = "https://github.com/JMFiore/Pynomics"}
+dependencies = [
+    "attrs", 
+    "numpy", 
+    "python-dateutil", 
+    "seaborn", 
+    "pandas", 
+    "rasterio", 
+    "matplotlib",
+    "shapely",
+    "pillow",
+    "Pyfeats",
+    "scikit-learn"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["Pynomic", "Pynomic.*"]
+namespaces = false
