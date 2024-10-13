@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 # License: MIT
-# Copyright (c) 2024, Fiore J.Manuel.
+# Copyright (c) 2024 Fiore J.Manuel.
 # All rights reserved.
 
 """Provides the objects and functions."""
@@ -13,6 +13,11 @@ import attrs
 
 
 import pandas as pd
+import numpy as np
+import zarr
+from sklearn.linear_model import LinearRegression
+import io
+import os
 
 # =============================================================================
 # CLASSES
@@ -32,7 +37,7 @@ class Pynomicproject:
         contains all the procesed data.
     """
 
-    raw_data: dict
+    raw_data: zarr.hierarchy
     ldata: pd.DataFrame
     n_dates: int
     dates: list
@@ -62,7 +67,9 @@ class Pynomicproject:
         except AttributeError:
             raise KeyError(k)
 
-    def generate_unique_feature(self, function, new_name: str, to_data=False):
+    def generate_unique_feature(
+        self, function, features_names: list, to_data=False
+    ):
         """Higher order function that iterate through the flight dates.
 
         Parameters
@@ -80,23 +87,232 @@ class Pynomicproject:
         -------
             dataframe with the new index.
         """
-        raw_data = self.raw_data
-        values_dict = {"id": [], "date": [], "old_name": []}
+        if isinstance(features_names, list):
+            values_list = []
+            for flight_date in self.dates:
+                for plot in self.raw_data["dates"][flight_date].group_keys():
+                    bands_names = []
+                    bands_arr = []
+                    for band in self.bands_name:
+                        bands_names.append(band)
+                        bands_arr.append(
+                            self.raw_data["dates"][flight_date][plot][band][:]
+                        )
+                    values = function(dict(zip(bands_names, bands_arr)))
+                    values.insert(0, plot)
+                    values.insert(1, flight_date)
+                    values_list.append(values)
 
-        for flight_dates in raw_data.keys():
-            for plot in raw_data[flight_dates].keys():
-                bands = raw_data[flight_dates][plot]
-                values_dict["date"].append(flight_dates.split("_")[0])
-                values_dict["id"].append(plot)
-                values_dict["old_name"].append(function(bands))
-        values_dict[new_name] = values_dict.pop("old_name")
+            features_names.insert(0, "id")
+            features_names.insert(1, "date")
+
+            if to_data:
+
+                df = pd.DataFrame(values_list, columns=features_names)
+                df.id = df.id.astype(int)
+                self.ldata = self.ldata.merge(df, on=["id", "date"])
+                return self.ldata
+
+            else:
+
+                return pd.DataFrame(values_list, columns=features_names)
+        else:
+            return print("feature_names is not a list")
+
+    def get_senescens_predictions(
+        self, band: str, threshold: float, to_data: bool = False
+    ):
+        """Generates predictions of senecense by providing threshold and index.
+
+        Args
+            band: Band name to be used in the prediciton.
+            threshold: value to determen if a plot is dry or not.
+            to_data: boolean value to save or not the predictions.
+
+        Returns
+        -------
+            Dataframe
+        """
+
+        def _case_in(plot, col_val, numerical_date_col, threshold):
+
+            for plotpos, plotval in enumerate(plot[numerical_date_col].values):
+                if (
+                    plot.loc[
+                        plot[numerical_date_col] == plotval, col_val
+                    ].values[0]
+                    <= threshold
+                ) & (plotpos != 0):
+
+                    if (
+                        plot.loc[
+                            plot[numerical_date_col] == plotval, col_val
+                        ].values[0]
+                        == threshold
+                    ):
+                        return round(plotval)
+                    else:
+                        ant_date = plot[numerical_date_col].values[plotpos - 1]
+                        colant_val = plot.loc[
+                            plot[numerical_date_col] == ant_date, col_val
+                        ].values[0]
+                        col_value = plot.loc[
+                            plot[numerical_date_col] == plotval, col_val
+                        ].values[0]
+                        yval = np.array([ant_date, plotval]).reshape(-1, 1)
+                        xval = np.array([colant_val, col_value]).reshape(-1, 1)
+                        lm = LinearRegression().fit(xval, yval)
+                        plotpred = lm.predict(
+                            np.array([threshold]).reshape(-1, 1)
+                        )[0][0]
+
+                        return round(plotpred)
+            return -999
+
+        def _case_upper(plot, col_val, numerical_date_col, threshold):
+
+            # filtro para quedarme con los valores negativos que se que
+            # corresponden a valores iniciales.
+            # menores al threshold pr lo tanto me van a dar valores negativos.
+            # pero no con una adecuada pendiente.
+            # por lo tanto erronea. Ajusto modelo para que tome el primer
+            # valor de la serie y el mas bajo.
+            ant_date = plot[numerical_date_col].values[0]
+            colant_val = plot.loc[
+                plot[numerical_date_col] == ant_date, col_val
+            ].values[0]
+
+            col_value = plot[col_val].min()
+            plotval = plot.loc[
+                plot[col_val] == col_value, numerical_date_col
+            ].values[0]
+            yval = np.array([ant_date, plotval]).reshape(-1, 1)
+            xval = np.array([colant_val, col_value]).reshape(-1, 1)
+            lm = LinearRegression().fit(xval, yval)
+            plotpred = lm.predict(np.array([threshold]).reshape(-1, 1))[0][0]
+
+            return round(plotpred)
+
+        def _case_lower(plot, col_val, numerical_date_col, threshold):
+            # Function to predict cases where the times series does not
+            # reach the threshold because its to low.(next implement segreg)
+            ant_date = plot[numerical_date_col].values[0]
+            colant_val = plot.loc[
+                plot[numerical_date_col] == ant_date, col_val
+            ].values[0]
+
+            col_value = plot[col_val].values[len(plot[col_val]) - 1]
+            plotval = plot.loc[
+                plot[col_val] == col_value, numerical_date_col
+            ].values[0]
+
+            yval = np.array([ant_date, plotval]).reshape(-1, 1)
+            xval = np.array([colant_val, col_value]).reshape(-1, 1)
+            lm = LinearRegression().fit(xval, yval)
+            plotpred = lm.predict(np.array([threshold]).reshape(-1, 1))[0][0]
+
+            return round(plotpred)
+
+        df1 = self.ldata.copy()
+        plot_id_col = "id"
+        col_val = band
+        df1["num_day"] = (
+            pd.to_datetime(df1.date) - pd.to_datetime(df1.date).min()
+        )
+        df1["num_day"] = (
+            df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
+        )
+        numerical_date_col = "num_day"
+
+        for p in df1[plot_id_col].unique():
+
+            plot = df1.loc[df1[plot_id_col] == p]
+
+            # First case if threshold is in rage
+            if (plot[col_val].min() <= threshold) & (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                >= threshold
+            ):
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_in(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
+
+            # Second case if threshold is upper than the range in col_val
+            elif (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                < threshold
+            ):
+                print(f"Plot Id: {p} range is lower than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
+
+            # Third case if threshold is lower than the range in col_val
+            elif plot[col_val].min() >= threshold:
+                print(f"Plot Id: {p} range is Higher than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
 
         if to_data:
+            self.ldata = self.ldata.merge(
+                df1.loc[
+                    :,
+                    [
+                        "id",
+                        "date",
+                        numerical_date_col,
+                        "dpred",
+                        "in_range",
+                    ].copy(),
+                ],
+                on=["id", "date"],
+            )
+        else:
+            return df1
 
-            df = pd.DataFrame(values_dict)
-            self.ldata = self.ldata.merge(df, on=["id", "date"])
+    @property
+    def plot(self):
+        """Generate plots from spectra."""
+        from .plot import Pynomicplotter
+
+        return Pynomicplotter(self)
+
+    def save(self, path):
+        """Function to save project as .zip file.
+
+        Args
+            path: Name of the file ending with .zip.
+
+        Returns
+        -------
+            a zipped folder in the path given.
+        """
+        if 'bands_name' not in list(self.raw_data.array_keys()):
+            self.raw_data.create_group("bands_name")
+            self.raw_data["bands_name"] = self.bands_name
+
+            df_buffer = io.BytesIO()
+            self.ldata.to_parquet(df_buffer, engine="pyarrow")
+            self.raw_data.create_group('ldata')
+            self.raw_data['ldata'] = [df_buffer.getbuffer().tobytes()]
+
+            store = zarr.ZipStore(path, mode='w')
+            zarr.copy_store(self.raw_data.store, store)
+            store.close()
             return
 
         else:
+            self.raw_data["bands_name"] = self.bands_name
 
-            return pd.DataFrame(values_dict)
+            df_buffer = io.BytesIO()
+            self.ldata.to_parquet(df_buffer, engine="pyarrow")
+            self.raw_data['ldata'] = [df_buffer.getbuffer().tobytes()]
+
+            store = zarr.ZipStore(path, mode='w')
+            zarr.copy_store(self.raw_data.store, store)
+            store.close()
+            return
