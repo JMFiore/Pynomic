@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 # License: MIT
-# Copyright (c) 2024, Fiore J.Manuel
+# Copyright (c) 2024, Fiore J.Manuel.
 # All rights reserved.
 
 """Provides the functions to read and extract the info from .tiff files."""
@@ -22,13 +22,14 @@ import re
 from PIL import Image
 import zarr
 import io
+import pandas_geojson as pdg
 
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
 
 
-def _read_grid(gpath):
+def _read_grid(gpath, col_id: str):
     """Reads a geojson file.
 
     Args:
@@ -46,12 +47,28 @@ def _read_grid(gpath):
         crs_coords = plotgrids["crs"]["properties"]["name"]
 
         for p in plotgrids["features"]:
-            dics[str(p["properties"]["fid"])] = p["geometry"]["coordinates"][0]
+            dics[str(p["properties"][col_id])] = p["geometry"]["coordinates"][
+                0
+            ]
 
         return crs_coords, dics
 
     else:
         raise ValueError("Grid is not a geojson file")
+
+
+def _get_dataframe_from_json(path_gjson):
+    data = pdg.read_geojson(path_gjson)
+    collist = data.get_properties()
+    dfg = data.to_dataframe()
+    keep = []
+    for c in dfg.columns:
+        for m in collist:
+            if len(c.split(m)) > 1:
+                keep.append(c)
+    dfa = dfg.loc[:, keep].copy()
+    dfa.columns = collist
+    return dfa
 
 
 def _get_tiff_files(fold_path):
@@ -141,7 +158,7 @@ def _extract_bands_from_raster(raster_data, multiplot, alpha_idx=-1):
     return true_bands, masked_band
 
 
-def extract_raster_data(raster_path, grid_path, bands_n=None):
+def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
     """Extracts the values from the raster file segregating each band and plot.
 
     Args:
@@ -155,7 +172,7 @@ def extract_raster_data(raster_path, grid_path, bands_n=None):
         DataFrame with date, mean band for each plot.
         list bands name.
     """
-    grid_cs, grids = _read_grid(grid_path)
+    grid_cs, grids = _read_grid(grid_path, col_id)
     bands_mean = []
     array_dict = {}
     bands_name = []
@@ -217,15 +234,17 @@ def extract_raster_data(raster_path, grid_path, bands_n=None):
             bands_mean.append(mp_bands)
 
             # Save the values in a dictionary.
-            array_dict[g] = dict(zip(bands_name, fitted_bands))
+            array_dict[pos + 1] = dict(zip(bands_name, fitted_bands))
 
-    df = pd.DataFrame(
-        bands_mean, columns=["id", "original_id", "date", *bands_name]
-    )
+    df = pd.DataFrame(bands_mean, columns=["id", col_id, "date", *bands_name])
+    dat = _get_dataframe_from_json(path_gjson=grid_path)
+    dat[col_id] = dat[col_id].astype(str)
+
+    df = df.merge(dat, on=col_id)
     return array_dict, bands_name, df
 
 
-def process_stack_tiff(folder_path, grid_path, bands_n=None):
+def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
     """Process all the .tiff files in a folder.
 
     Args:
@@ -250,7 +269,7 @@ def process_stack_tiff(folder_path, grid_path, bands_n=None):
             dates.append(date_key)
 
         to_raw_data, bands_n, ldata_bands = extract_raster_data(
-            folder_path + "/" + tiff_file, grid_path, bands_n
+            folder_path + "/" + tiff_file, grid_path, col_id, bands_n
         )
 
         raw_data["dates"].create_group(date_key)
@@ -287,7 +306,7 @@ def read_zarr(path):
     -------
         Pynomicproject object
     """
-    store = zarr.open(path, mode='a')
+    store = zarr.open(path, mode="a")
     info = zarr.group()
     zarr.copy_all(store, info)
     df_buffer = io.BytesIO()
@@ -298,7 +317,7 @@ def read_zarr(path):
         raw_data=info,
         ldata=ldata.copy(),
         n_dates=len(ldata.date.unique()),
-        dates=ldata.date.unique(),
+        dates=list(ldata.date.unique()),
         n_bands=len(info.bands_name[:]),
-        bands_name=info.bands_name[:].copy(),
+        bands_name=list(info.bands_name[:].copy()),
     )
