@@ -27,7 +27,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Topic :: Scientific/Engineering",
 ]
-urls = {Homepage = "https://github.com/JMFiore/Pynomics"}
+urls = {Homepage = "https://github.com/JMFiore/Pynomic"}
 dependencies = [
     "attrs", 
     "numpy", 
@@ -38,8 +38,11 @@ dependencies = [
     "matplotlib",
     "shapely",
     "pillow",
-    "Pyfeats",
-    "scikit-learn"
+    "zarr",
+    "scikit-learn",
+    "opencv-python",
+    "pyarrow",
+    "pandas-geojson"
 ]
 
 [tool.setuptools]
