@@ -41,7 +41,6 @@ dependencies = [
     "zarr",
     "scikit-learn",
     "opencv-python",
-    "pyarrow",
     "pandas-geojson"
 ]
 

@@ -22,7 +22,6 @@ import numpy as np
 # CLASSES
 # =============================================================================
 
-
 @attr.s(repr=False)
 class Pynomicplotter:
     """class for ploting the data in Pynomicproject."""
@@ -60,6 +59,7 @@ class Pynomicplotter:
         df = self._summary.ldata
 
         plot = df.loc[df.id == n_id].copy()
+
         if days:
             plot["date"] = (
                 pd.to_datetime(plot["date"])
@@ -72,12 +72,15 @@ class Pynomicplotter:
             plot["date"] = pd.to_datetime(plot["date"]).dt.date
             xlab = "Flight dates"
             rot = 90
+        
+        plot = plot.sort_values('date').reset_index()
+        plot.set_index('date', inplace=True)
+        if ax is None:
+            ax = plt.axes()
 
-        plot = plot.loc[plot["date"].sort_values().index].reset_index()
-        ax = plt.gca() if ax is None else ax
-        ax.plot(plot.date, plot[band_name], **kwargs)
-        ax.set_xticks(plot.date)
-        ax.set_xticklabels(plot.date, rotation=rot)
+        ax.plot(plot.index, plot[band_name], **kwargs)
+        ax.set_xticks(plot.index)
+        ax.set_xticklabels(plot.index, rotation=rot)
         self._set_common_labels(ax, f"{band_name}", str(n_id), band_name, xlab)
 
         return ax
@@ -175,7 +178,7 @@ class Pynomicplotter:
             xlab = "Flight dates"
             rot = 90
 
-        plot = plot.loc[plot["date"].sort_values().index].reset_index()
+        plot = plot.sort_values('date').reset_index()
         axbig = fig.add_subplot(gs[1, :])
         axbig = plt.gca() if axbig is None else axbig
         axbig.plot(plot.date, plot[band_name], **kwargs)
