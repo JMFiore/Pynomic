@@ -64,7 +64,7 @@ def _get_dataframe_from_json(path_gjson):
     keep = []
     for c in dfg.columns:
         for m in collist:
-            if len(c.split(m)) > 1:
+            if len(c.split("."+m)) > 1:
                 keep.append(c)
     dfa = dfg.loc[:, keep].copy()
     dfa.columns = collist

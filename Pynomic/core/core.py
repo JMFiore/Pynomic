@@ -166,7 +166,7 @@ class Pynomicproject:
             return print("feature_names is not a list")
 
     def get_senescens_predictions(
-        self, band: str, threshold: float, to_data: bool = False
+        self, band: str, threshold: float, to_data: bool = False, from_day = 0
     ):
         """Generates predictions of senecense by providing threshold and index.
 
@@ -180,7 +180,7 @@ class Pynomicproject:
             Dataframe
         """
 
-        def _case_in(plot, col_val, numerical_date_col, threshold):
+        def _case_in(plot, col_val, numerical_date_col, threshold ):
 
             for plotpos, plotval in enumerate(plot[numerical_date_col].values):
                 if (
@@ -258,7 +258,7 @@ class Pynomicproject:
             plotpred = lm.predict(np.array([threshold]).reshape(-1, 1))[0][0]
 
             return round(plotpred)
-
+        
         df1 = self.ldata.copy()
         plot_id_col = "id"
         col_val = band
@@ -269,6 +269,9 @@ class Pynomicproject:
             df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
         )
         numerical_date_col = "num_day"
+
+        if from_day > 0 :
+            df1 = df1.loc[df1.num_day > from_day].copy()
 
         for p in df1[plot_id_col].unique():
 
@@ -309,13 +312,13 @@ class Pynomicproject:
                     :,
                     [
                         "id",
-                        "date",
                         numerical_date_col,
                         "dpred",
                         "in_range",
-                    ].copy(),
+                    ],
                 ],
-                on=["id", "date"],
+                on=["id"],
+                how = 'left'
             )
         else:
             return df1
