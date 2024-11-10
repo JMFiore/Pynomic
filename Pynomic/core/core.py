@@ -19,6 +19,7 @@ from sklearn.linear_model import LinearRegression
 import io
 import os
 from PIL import Image
+from skimage.feature import graycomatrix, graycoprops
 
 # =============================================================================
 # CLASSES
@@ -29,7 +30,7 @@ from PIL import Image
 class Pynomicproject:
     """Contains all the extracted bands from each plot and dates.
 
-    Attributes
+    Parameters
     ----------
     raw_data : dict-like
         contains all the data.
@@ -69,12 +70,16 @@ class Pynomicproject:
             raise KeyError(k)
 
     def RGB_VI(self, Red, Blue, Green):
-        """Calculates Vegetation index.
+        """Calculates RGB Vegetation index.
 
-        Args
-            Red: name of the column that contains the red band
-            Blue: name of the column that contains the blue band
-            Green: name of the column that contains the green band
+        Parameters
+        ----------
+        Red:str
+            name of the column that contains the red band.
+        Blue:str
+            name of the column that contains the blue band.
+        Green:str
+            name of the column that contains the green band.
 
         Returns
         -------
@@ -85,34 +90,167 @@ class Pynomicproject:
         blue = df.loc[:, Blue]
         green = df.loc[:, Green]
 
+        # Visible-band difference vegetation index
         df["VDVI"] = (2 * green - red - blue) / (
-            2 * green + red + blue
-        )  # Visible-band difference vegetation index
+            2 * green + red + blue)
+        # Normalized green–red difference index (Kawashima Index) also called GRVI
         df["NGRDI"] = (green - red) / (
-            green + red
-        )  # Normalized green–red difference index (Kawashima Index)
+            green + red)
+        # Visible Atmospherically Resistant Index
         df["VARI"] = (green - red) / (
-            green + red - blue
-        )  # Visible Atmospherically Resistant Index
-        df["GRRI"] = green / red  # Green–red ratio index
+            green + red - blue)
+        # Green–red ratio index
+        df["GRRI"] = green / red
+        # Vegetativen
         df["VEG"] = green / (
-            (red**0.667) * (blue ** (1 - 0.667))
-        )  # Vegetativen
+            (red**0.667) * (blue ** (1 - 0.667)))
+        # Modified Green Red Vegetation Index
         df["MGRVI"] = ((green**2) - (red**2)) / (
-            (green**2) + (blue**2)
-        )  # Modified Green Red Vegetation Index
+            (green**2) + (blue**2))
+        # Green Leaf Index
         df["GLI"] = (2 * green - red - blue) / (
-            (-red) - blue
-        )  # Green Leaf Index
+            (-red) - blue)
+        # Excess Red Vegetation Index
         df["ExR"] = (1.4 * red - green) / (
-            green + red + blue
-        )  # Excess Red Vegetation Index
+            green + red + blue)
+        # Excess Blue Vegetation Index
         df["ExB"] = (1.4 * blue - green) / (
-            green + red + blue
-        )  # Excess Blue Vegetation Index
-        df["ExG"] = 2 * green - red - blue  # Excess Green Vegetation Index
+            green + red + blue)
+        # Excess Green Vegetation Index
+        df["ExG"] = 2 * green - red - blue
+
         return
 
+    def Multispectral_VI(self, Red, Blue, Green, Red_edge, Nir):
+        """Calculates Multispectral Vegetation index.
+
+        Parameters
+        ----------
+        Red: str
+            name of the column that contains the red band.
+        Blue: str
+            name of the column that contains the blue band.
+        Green: str
+            name of the column that contains the green band.
+        Red edge: str
+            name of the column that contains the Red edge band.
+        NIR: str
+            name of the column that contains thee NIR band.
+
+        Returns
+        -------
+            Vegetation index in the ldata object.
+        """
+        df = self.ldata
+        red = df.loc[:, Red]
+        blue = df.loc[:, Blue]
+        green = df.loc[:, Green]
+        redge = df.loc[:,Red_edge]
+        nir = df.loc[:,Nir]
+
+        # NDVI index 
+        df["NDVI"] = (nir - red) / (nir + red)
+        # GNDVI
+        df["GNDVI"] = (nir - green) / (nir + green)
+        # NDRE
+        df['NDRE'] = (nir - redge) / (nir + redge)
+        # EVI_2
+        df["EVI_2"] = 2.5 * ((nir- red)/(nir + (2.4*red) + 1))
+        # SAVI
+        df["SAVI"] = (1.5 * (nir - red))/(nir + red + 0.5)
+        # OSAVI
+        df["OSAVI"] = (1.16 * (nir - red))/ (nir + red + 0.16)
+        # TDVI
+        df["TDVI"] = np.sqrt((0.5 + ((nir-red)/(nir + red))))
+        # NIRV
+        df["NIRv"] = nir * ((nir - red) / (nir + red))
+        # Simple ratio
+        df["SR"] = nir / red
+        # SRredge Simple ratio Red edge
+        df['SRredge'] = nir / redge
+        # EVI Enhanced vegetation index
+        df["EVI"] = 2.5 * ((nir - red) / (nir + 6 * red - 7.5 * blue + 1))
+        # GNDRE Green Normalized difference Red Edge index
+        df ["GNDRE"]  = (redge - green) / (redge + green)
+        # MCARI2 Modified Chlorophyll Absorption Ratio Index
+        df["MCARI2"] = 1.5 * ((2.5 * (nir - red))- (1.3 * ( nir - green))/ np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red) )) - 0.5 ))
+        # MTVI Modified Triangular Vegetation Index  
+        df["MTVI"] = 1.2 * ((1.2 * (nir -green)) - (2.5 * (red - green)))
+        # MTVI2  Modified Triangular Vegetation Index
+        df["MTVI2"] = (1.5 * ((1.2 * (nir -green)) - (2.5 * (red - green)))) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red) )) - 0.5 )
+        # NDRE Normalized Difference Red Edge index
+        df['NDRE'] = (nir - redge)/ (nir + redge)
+        # RDVI Renormalized Difference Vegetation Index
+        df["RDVI"] = (nir - red) / np.sqrt(nir - red)
+        # RTVI Red Edge Triangulated vegetation Index
+        df['RTVI'] = (100 * (nir - redge)) - (10 * (nir - green))
+
+        return
+    
+    def Calcualte_TI_GLCM_RGB(
+        self, distances:list, angles:list
+    ):
+        """Calculates texturial indices from RGB bands
+        be aweare the O = (n_dist * n_bands)^n_angles
+        time and number of variables can scale very quckly.
+
+        Parameters
+        ----------
+        Red: str
+            name of the column that contains the red band.
+        Blue: str
+            name of the column that contains the blue band.
+        Green: str
+            name of the column that contains the green band.
+
+        Returns
+        -------
+            dataframe with the new index.
+        """
+        def _calculate_GLCM(df,angles, distances, bands):
+            features_names = []
+            glcm_values = []
+            for angl in angles:
+                for dist in distances:
+                    for b in bands:
+                        gray = df[b][:].copy()
+                        gray *= (255/gray.max())
+                        gray = np.uint8(gray.astype(int))
+                        glcm = graycomatrix(gray, distances=[dist],
+                                            angles=[angl], levels=256,
+                                            symmetric=True, normed=True)
+                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'cont')
+                        glcm_values.append(round(graycoprops(glcm, 'contrast')[0][0], 4))
+                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'disst')
+                        glcm_values.append(round(graycoprops(glcm, 'dissimilarity')[0][0], 4))
+                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'homog')
+                        glcm_values.append(round(graycoprops(glcm, 'homogeneity')[0][0], 4))
+                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'energy')
+                        glcm_values.append(round(graycoprops(glcm, 'energy')[0][0], 4))
+                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'corr')
+                        glcm_values.append(round(graycoprops(glcm, 'correlation')[0][0], 4))
+            return glcm_values, features_names
+        
+        values_list = []
+        for flight_date in self.dates:
+            for plot in self.raw_data["dates"][flight_date].group_keys():
+                bands_names = []
+                bands_arr = []
+                for band in self.bands_name:
+                        bands_names.append(band)
+                        bands_arr.append(
+                            self.raw_data["dates"][flight_date][plot][band][:]
+                        )
+                values, features_names= _calculate_GLCM(df = dict(zip(bands_names, bands_arr)), distances = distances,
+                                          angles = angles, bands = self.bands_name)
+                values.insert(0, plot)
+                values.insert(1, flight_date)
+                values_list.append(values)
+
+        features_names.insert(0, "id")
+        features_names.insert(1, "date")
+        return pd.DataFrame(values_list, columns=features_names)
+        
     def generate_unique_feature(
         self, function, features_names: list, to_data=False
     ):
@@ -120,14 +258,13 @@ class Pynomicproject:
 
         Parameters
         ----------
-        function : a function that contains a formula and
-        returns a sigle value
-
+        function :
+            function that contains a formula and
+        returns a sigle value.
         new_name : str
-                    the name of the new feature.
-
+            the name of the new feature.
         to_data : bool
-                merges it with the project data.
+            merges it with the project data.
 
         Returns
         -------
@@ -170,10 +307,14 @@ class Pynomicproject:
     ):
         """Generates predictions of senecense by providing threshold and index.
 
-        Args
-            band: Band name to be used in the prediciton.
-            threshold: value to determen if a plot is dry or not.
-            to_data: boolean value to save or not the predictions.
+        Parameters
+        ----------
+        band:str
+            Band name to be used in the prediciton.
+        threshold:float
+            value to determen if a plot is dry or not.
+        to_data:bool
+            boolean value to save or not the predictions.
 
         Returns
         -------
@@ -333,8 +474,10 @@ class Pynomicproject:
     def save(self, path):
         """Function to save project as .zip file.
 
-        Args
-            path: Name of the file ending with .zip.
+        Parameters
+        ----------
+        path:str
+            Name of the file ending with .zip.
 
         Returns
         -------
@@ -369,14 +512,18 @@ class Pynomicproject:
     def save_plots_as_tiff(self, folder_path, fun, identification_col):
         """Creates as many folders as dates in path provided and saves the plot images.
 
-        Args:
-            folder_path: Path where to save the images.
-            fun: function to use to stack the bands.
-            identification_col: Column of ldata where the ids are.
+        Parameters
+        ----------
+        folder_path:str
+            Path where to save the images.
+        fun:function
+            function to use to stack the bands.
+        identification_col:str
+            Column of ldata where the ids are.
 
         Returns
         -------
-            folder with images
+            folder with images.
         """
         for d in self.dates:
             path = os.path.join(folder_path, d)

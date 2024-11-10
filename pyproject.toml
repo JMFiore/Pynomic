@@ -41,7 +41,8 @@ dependencies = [
     "zarr",
     "scikit-learn",
     "opencv-python",
-    "pandas-geojson"
+    "pandas-geojson",
+    "scikit-image"
 ]
 
 [tool.setuptools]

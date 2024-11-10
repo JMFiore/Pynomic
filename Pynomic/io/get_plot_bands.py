@@ -102,7 +102,9 @@ def auto_fit_image(mtx, hbuffer=2, wbuffer=2):
     -------
         tuple with croping parameters. Angle value.
     """
-    gray = np.uint8(np.where(mtx <= 0, mtx, 255)).copy()
+
+    gray = np.where(mtx <= 0, mtx, 255)
+
     gray = np.uint8(np.where(gray > 0, gray, 0))
     gray = np.array(gray)
 
