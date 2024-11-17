@@ -42,7 +42,8 @@ dependencies = [
     "scikit-learn",
     "opencv-python",
     "pandas-geojson",
-    "scikit-image"
+    "scikit-image",
+    "pyarrow"
 ]
 
 [tool.setuptools]
