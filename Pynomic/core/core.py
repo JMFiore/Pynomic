@@ -145,17 +145,17 @@ class Pynomicproject:
         red = df.loc[:, Red]
         blue = df.loc[:, Blue]
         green = df.loc[:, Green]
-        redge = df.loc[:,Red_edge]
-        nir = df.loc[:,Nir]
+        redge = df.loc[:, Red_edge]
+        nir = df.loc[:, Nir]
 
-        # NDVI index 
+        # NDVI index
         df["NDVI"] = (nir - red) / (nir + red)
         # GNDVI
         df["GNDVI"] = (nir - green) / (nir + green)
         # NDRE
         df['NDRE'] = (nir - redge) / (nir + redge)
         # EVI_2
-        df["EVI_2"] = 2.5 * ((nir- red)/(nir + (2.4*red) + 1))
+        df["EVI_2"] = 2.5 * ((nir - red)/(nir + (2.4*red) + 1))
         # SAVI
         df["SAVI"] = (1.5 * (nir - red))/(nir + red + 0.5)
         # OSAVI
@@ -171,27 +171,28 @@ class Pynomicproject:
         # EVI Enhanced vegetation index
         df["EVI"] = 2.5 * ((nir - red) / (nir + 6 * red - 7.5 * blue + 1))
         # GNDRE Green Normalized difference Red Edge index
-        df ["GNDRE"]  = (redge - green) / (redge + green)
+        df["GNDRE"] = (redge - green) / (redge + green)
         # MCARI2 Modified Chlorophyll Absorption Ratio Index
-        df["MCARI2"] = 1.5 * ((2.5 * (nir - red))- (1.3 * ( nir - green))/ np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red) )) - 0.5 ))
+        df["MCARI2"] = 1.5 * ((2.5 * (nir - red)) - (1.3 * (nir - green)) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red))) - 0.5))
         # MTVI Modified Triangular Vegetation Index  
-        df["MTVI"] = 1.2 * ((1.2 * (nir -green)) - (2.5 * (red - green)))
+        df["MTVI"] = 1.2 * ((1.2 * (nir - green)) - (2.5 * (red - green)))
         # MTVI2  Modified Triangular Vegetation Index
-        df["MTVI2"] = (1.5 * ((1.2 * (nir -green)) - (2.5 * (red - green)))) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red) )) - 0.5 )
+        df["MTVI2"] = (1.5 * ((1.2 * (nir - green)) - (2.5 * (red - green)))) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red))) - 0.5)
         # NDRE Normalized Difference Red Edge index
-        df['NDRE'] = (nir - redge)/ (nir + redge)
+        df['NDRE'] = (nir - redge) / (nir + redge)
         # RDVI Renormalized Difference Vegetation Index
         df["RDVI"] = (nir - red) / np.sqrt(nir - red)
         # RTVI Red Edge Triangulated vegetation Index
         df['RTVI'] = (100 * (nir - redge)) - (10 * (nir - green))
 
         return
-    
-    def Calcualte_TI_GLCM_RGB(
-        self, distances:list, angles:list
+
+    def Calcualte_TI_GLCM(
+        self, distances: list, angles: list
     ):
-        """Calculates texturial indices from RGB bands
-        be aweare the O = (n_dist * n_bands)^n_angles
+        """Calculates texturial indices from RGB bands.
+
+        be aweare the O = (n_dist * n_bands)^n_angles.
         time and number of variables can scale very quckly.
 
         Parameters
@@ -214,8 +215,9 @@ class Pynomicproject:
                 for dist in distances:
                     for b in bands:
                         gray = df[b][:].copy()
-                        gray *= (255/gray.max())
-                        gray = np.uint8(gray.astype(int))
+                        if not np.issubdtype(gray.dtype, np.uint8):
+                            gray *= (255/np.round(gray, 6).max())
+                            gray = np.uint8(np.round(gray, 0).astype(int))
                         glcm = graycomatrix(gray, distances=[dist],
                                             angles=[angl], levels=256,
                                             symmetric=True, normed=True)
@@ -230,7 +232,7 @@ class Pynomicproject:
                         features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'corr')
                         glcm_values.append(round(graycoprops(glcm, 'correlation')[0][0], 4))
             return glcm_values, features_names
-        
+
         values_list = []
         for flight_date in self.dates:
             for plot in self.raw_data["dates"][flight_date].group_keys():
@@ -249,7 +251,12 @@ class Pynomicproject:
 
         features_names.insert(0, "id")
         features_names.insert(1, "date")
-        return pd.DataFrame(values_list, columns=features_names)
+
+        tidf = pd.DataFrame(values_list, columns=features_names)
+        tidf.id = tidf.id.astype(int)
+        self.ldata = self.ldata.merge(tidf,
+                         on =['id', 'date'])
+        return self.ldata
         
     def generate_unique_feature(
         self, function, features_names: list, to_data=False
