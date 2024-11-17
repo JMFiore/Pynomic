@@ -226,3 +226,97 @@ def test_RGB_ind():
     )
 
     return
+
+
+def test_Multispectral_VI():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/MFlights",
+        "add_on/Grids/Grid_WheatData_UAV_2021_1.geojson",
+        "ID",
+        ["red", "green", "blue", "red_edge", "nir"],
+    )
+
+    assert pyt.ldata.shape[0] == 1100
+    assert pyt.ldata.shape[1] == 20
+
+    pyt.Multispectral_VI(
+        Red="red", Blue="blue", Green="green", Red_edge="red_edge", Nir="nir"
+    )
+
+    assert pyt.ldata.shape[0] == 1100
+    assert pyt.ldata.shape[1] == 37
+
+    assert "NDVI" in pyt.ldata.columns
+    assert "GNDVI" in pyt.ldata.columns
+    assert "NDRE" in pyt.ldata.columns
+    assert "EVI_2" in pyt.ldata.columns
+    assert "SAVI" in pyt.ldata.columns
+    assert "OSAVI" in pyt.ldata.columns
+    assert "TDVI" in pyt.ldata.columns
+    assert "NIRv" in pyt.ldata.columns
+    assert "SR" in pyt.ldata.columns
+    assert "SRredge" in pyt.ldata.columns
+    assert "EVI" in pyt.ldata.columns
+    assert "GNDRE" in pyt.ldata.columns
+    assert "MCARI2" in pyt.ldata.columns
+    assert "MTVI" in pyt.ldata.columns
+    assert "MTVI2" in pyt.ldata.columns
+    assert "RDVI" in pyt.ldata.columns
+    assert "RTVI" in pyt.ldata.columns
+
+    assert (
+        pyt.ldata.loc[pyt.ldata.id == 1, "NDVI"].values[0]
+        == 0.7110486695733146
+    )
+
+    return
+
+
+def test_GLMC_TI():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/MFlights",
+        "add_on/Grids/Grid_WheatData_UAV_2021_1.geojson",
+        "ID",
+        ["red", "green", "blue", "red_edge", "nir"],
+    )
+
+    assert pyt.ldata.shape[0] == 1100
+    assert pyt.ldata.shape[1] == 20
+
+    pyt.Calcualte_TI_GLCM([50], [90])
+
+    assert pyt.ldata.shape[0] == 1100
+    assert pyt.ldata.shape[1] == 45
+
+    assert "red_50_90_cont" in pyt.ldata.columns
+    assert "red_50_90_disst" in pyt.ldata.columns
+    assert "red_50_90_homog" in pyt.ldata.columns
+    assert "red_50_90_energy" in pyt.ldata.columns
+    assert "red_50_90_corr" in pyt.ldata.columns
+    assert "green_50_90_cont" in pyt.ldata.columns
+    assert "green_50_90_disst" in pyt.ldata.columns
+    assert "green_50_90_homog" in pyt.ldata.columns
+    assert "green_50_90_energy" in pyt.ldata.columns
+    assert "green_50_90_corr" in pyt.ldata.columns
+    assert "blue_50_90_cont" in pyt.ldata.columns
+    assert "blue_50_90_disst" in pyt.ldata.columns
+    assert "blue_50_90_homog" in pyt.ldata.columns
+    assert "blue_50_90_energy" in pyt.ldata.columns
+    assert "blue_50_90_corr" in pyt.ldata.columns
+    assert "red_edge_50_90_cont" in pyt.ldata.columns
+    assert "red_edge_50_90_disst" in pyt.ldata.columns
+    assert "red_edge_50_90_homog" in pyt.ldata.columns
+    assert "red_edge_50_90_energy" in pyt.ldata.columns
+    assert "red_edge_50_90_corr" in pyt.ldata.columns
+    assert "nir_50_90_cont" in pyt.ldata.columns
+    assert "nir_50_90_disst" in pyt.ldata.columns
+    assert "nir_50_90_homog" in pyt.ldata.columns
+    assert "nir_50_90_energy" in pyt.ldata.columns
+    assert "nir_50_90_corr" in pyt.ldata.columns
+
+    assert (
+        round(pyt.ldata.loc[pyt.ldata.id == 1, "red_50_90_cont"].values[0], 0)
+        == 7608.0
+    )
+
+    return
