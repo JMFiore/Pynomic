@@ -310,9 +310,10 @@ def read_zarr(path):
     """
     store = zarr.open(path, mode="a")
     info = zarr.group()
-    zarr.copy_all(store, info)
+    info.create_group('dates')
+    zarr.copy_all(store['dates'], info['dates'])
     df_buffer = io.BytesIO()
-    df_buffer.write(info["ldata"][0])
+    df_buffer.write(store["ldata"][0])
     ldata = pd.read_parquet(df_buffer)
 
     return core.Pynomicproject(
@@ -320,6 +321,6 @@ def read_zarr(path):
         ldata=ldata.copy(),
         n_dates=len(ldata.date.unique()),
         dates=list(ldata.date.unique()),
-        n_bands=len(info.bands_name[:]),
-        bands_name=list(info.bands_name[:].copy()),
+        n_bands=len(store.bands_name[:]),
+        bands_name=[b for b in store.bands_name[:]],
     )
