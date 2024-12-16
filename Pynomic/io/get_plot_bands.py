@@ -23,6 +23,8 @@ from PIL import Image
 import zarr
 import io
 import pandas_geojson as pdg
+import geopandas as gdp
+import shapely
 
 # =============================================================================
 # FUNCTIONS
@@ -55,6 +57,40 @@ def _read_grid(gpath, col_id: str):
 
     else:
         raise ValueError("Grid is not a geojson file")
+
+def _read_grid2(gpath, col_id:str):
+    """Reads a geojson and shape files.
+
+    Args:
+        gpath: grid path to a geojson or shape file.
+
+    Returns
+    -------
+        geodataframe form the grid.
+        dict-like object with id and coords of each plot.
+    """
+    df = gdp.read_file(gpath)
+    df[col_id] = df[col_id].astype(str)
+    geodf = df.copy()
+    poligons_dict = df.copy().set_index(col_id).loc[: , 'geometry'].to_dict()
+
+    return geodf, poligons_dict
+
+
+def _read_grids(gpath, col_id:str):
+    """Reads a geojson file or shape file.
+
+    Args:
+        gpath: grid path to a geojson file.
+
+    Returns
+    -------
+        coordinate system of the grid.
+        dict-like object with id and coords of each plot.
+    """
+    data = gdp.read_file(gpath)
+    data_dic = data.loc[:,[col_id, 'geometry']].copy().to_dict(index= False)
+
 
 
 def _get_dataframe_from_json(path_gjson):
@@ -174,7 +210,7 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
         DataFrame with date, mean band for each plot.
         list bands name.
     """
-    grid_cs, grids = _read_grid(grid_path, col_id)
+    geodf, grids = _read_grid2(grid_path, col_id)
     bands_mean = []
     array_dict = {}
     bands_name = []
@@ -183,7 +219,7 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
             if int(pos) == 0:
                 coords = src.meta["crs"]
                 print(f"Raster Coords system: {coords}")
-                print(f"Grid Coords system: {grid_cs}")
+                print(f"Grid Coords system: {geodf.crs}")
 
             # Check if contains alpha band
             contains_alpha_band = -1
@@ -191,15 +227,21 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
                 if interp == rasterio.enums.ColorInterp.alpha:
                     contains_alpha_band = idx - 1
 
+            if grids[g].geom_type == 'MultiPolygon':
+                figure = grids[g]
+            else:
+                figure = MultiPolygon([grids[g]])
+
+
             if contains_alpha_band != -1:
                 # Diferentiate the true bands form the mask band.
                 true_bands, masked_band = _extract_bands_from_raster(
-                    src, MultiPolygon([Polygon(grids[g])]), contains_alpha_band
+                    src, figure, contains_alpha_band
                 )
             else:
                 # Returns the las band for fiting.
                 true_bands, masked_band = _extract_bands_from_raster(
-                    src, MultiPolygon([Polygon(grids[g])])
+                    src, figure
                 )
 
             # Get the fitting parameters.
@@ -239,7 +281,7 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
             array_dict[pos + 1] = dict(zip(bands_name, fitted_bands))
 
     df = pd.DataFrame(bands_mean, columns=["id", col_id, "date", *bands_name])
-    dat = _get_dataframe_from_json(path_gjson=grid_path)
+    dat = pd.DataFrame(geodf.drop(columns = 'geometry'))
     dat[col_id] = dat[col_id].astype(str)
 
     df = df.merge(dat, on=col_id)
