@@ -350,19 +350,19 @@ def read_zarr(path):
     -------
         Pynomicproject object
     """
-    store = zarr.open(path, mode="a")
-    info = zarr.group()
-    info.create_group('dates')
-    zarr.copy_all(store['dates'], info['dates'])
+    store = zarr.open_group(path, mode="a")
+    
+
+    ## Transforms the dataframe from bytes to pandas dataframe
     df_buffer = io.BytesIO()
     df_buffer.write(store["ldata"][0])
     ldata = pd.read_parquet(df_buffer)
 
     return core.Pynomicproject(
-        raw_data=info,
+        raw_data=store,
         ldata=ldata.copy(),
         n_dates=len(ldata.date.unique()),
         dates=list(ldata.date.unique()),
         n_bands=len(store.bands_name[:]),
-        bands_name=[b for b in store.bands_name[:]],
+        bands_name=[str(b) for b in store.bands_name[:]],
     )

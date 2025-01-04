@@ -499,9 +499,9 @@ class Pynomicproject:
             self.raw_data.create_group("ldata")
             self.raw_data["ldata"] = [df_buffer.getbuffer().tobytes()]
 
-            store = zarr.ZipStore(path, mode="w")
-            zarr.copy_store(self.raw_data.store, store)
-            store.close()
+            out_store = zarr.DirectoryStore(path)
+            zarr.copy_store(self.raw_data.store, out_store)
+            
             return
 
         else:
@@ -511,9 +511,9 @@ class Pynomicproject:
             self.ldata.to_parquet(df_buffer, engine="pyarrow")
             self.raw_data["ldata"] = [df_buffer.getbuffer().tobytes()]
 
-            store = zarr.ZipStore(path, mode="w")
-            zarr.copy_store(self.raw_data.store, store)
-            store.close()
+            out_store = zarr.DirectoryStore(path)
+            zarr.copy_store(self.raw_data.store, out_store)
+            
             return
 
     def save_plots_as_tiff(self, folder_path, fun, identification_col):
