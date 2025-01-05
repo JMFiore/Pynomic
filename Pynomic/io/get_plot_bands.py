@@ -280,11 +280,12 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
             # Save the values in a dictionary.
             array_dict[pos + 1] = dict(zip(bands_name, fitted_bands))
 
-    df = pd.DataFrame(bands_mean, columns=["id", col_id, "date", *bands_name])
-    dat = pd.DataFrame(geodf.drop(columns = 'geometry'))
-    dat[col_id] = dat[col_id].astype(str)
+    df1 = pd.DataFrame(bands_mean, columns=["id", col_id, "date", *bands_name])
+    geodat = geodf
+    geodat[col_id] = geodat[col_id].astype(str)
 
-    df = df.merge(dat, on=col_id)
+    df = geodat.merge(df1, on=col_id)
+    df = df.loc[:,[*df1.columns.values, *geodat.drop(columns= col_id).columns.values]]
     return array_dict, bands_name, df
 
 
@@ -325,10 +326,11 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
                 raw_data["dates"][date_key][plot_id][band] = to_raw_data[
                     plot_id
                 ][band]
-
+        #ldata_bands = ldata_bands.reset_index().drop(columns= 'index', axis = 1)
         ldata.append(ldata_bands)
 
-    df_data = pd.concat(ldata, axis=0)
+
+    df_data = pd.concat(ldata, axis=0).reset_index().drop(columns= 'index', axis = 1)
 
     return core.Pynomicproject(
         raw_data=raw_data,
@@ -356,7 +358,7 @@ def read_zarr(path):
     ## Transforms the dataframe from bytes to pandas dataframe
     df_buffer = io.BytesIO()
     df_buffer.write(store["ldata"][0])
-    ldata = pd.read_parquet(df_buffer)
+    ldata = gdp.read_parquet(df_buffer)
 
     return core.Pynomicproject(
         raw_data=store,

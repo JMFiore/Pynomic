@@ -43,6 +43,7 @@ dependencies = [
     "opencv-python",
     "pandas-geojson",
     "scikit-image",
+    "geopandas",
     "pyarrow"
 ]
 
