@@ -330,7 +330,8 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
         ldata.append(ldata_bands)
 
 
-    df_data = pd.concat(ldata, axis=0)
+    df_data = pd.concat(ldata, axis=0).reset_index().drop(columns='index')
+    
 
     return core.Pynomicproject(
         raw_data=raw_data,
