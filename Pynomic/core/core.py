@@ -457,45 +457,43 @@ class Pynomicproject:
 
         def _case_upper(plot, col_val, numerical_date_col, threshold):
 
-            # filtro para quedarme con los valores negativos que se que
-            # corresponden a valores iniciales.
-            # menores al threshold pr lo tanto me van a dar valores negativos.
-            # pero no con una adecuada pendiente.
-            # por lo tanto erronea. Ajusto modelo para que tome el primer
-            # valor de la serie y el mas bajo.
-            ant_date = plot[numerical_date_col].values[0]
-            colant_val = plot.loc[
-                plot[numerical_date_col] == ant_date, col_val
-            ].values[0]
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
 
-            col_value = plot[col_val].min()
-            plotval = plot.loc[
-                plot[col_val] == col_value, numerical_date_col
-            ].values[0]
-            yval = np.array([ant_date, plotval]).reshape(-1, 1)
-            xval = np.array([colant_val, col_value]).reshape(-1, 1)
-            lm = LinearRegression().fit(xval, yval)
-            plotpred = lm.predict(np.array([threshold]).reshape(-1, 1))[0][0]
+            spl = UnivariateSpline(x, y, k=3, s=4)
+            #xs = np.linspace(x.min(), x.max(), 1000)
+
+            def _func(x_val):
+                return spl(x_val) - threshold
+            
+            initial_guess = np.sort(plot[numerical_date_col].values)[0]
+            result = root(_func, initial_guess)
+
+
+            if result.success:
+                plotpred = result.x[0]
+            else:
+                plotpred = 0
 
             return round(plotpred)
 
         def _case_lower(plot, col_val, numerical_date_col, threshold):
-            # Function to predict cases where the times series does not
-            # reach the threshold because its to low.(next implement segreg)
-            ant_date = plot[numerical_date_col].values[0]
-            colant_val = plot.loc[
-                plot[numerical_date_col] == ant_date, col_val
-            ].values[0]
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
 
-            col_value = plot[col_val].values[len(plot[col_val]) - 1]
-            plotval = plot.loc[
-                plot[col_val] == col_value, numerical_date_col
-            ].values[0]
+            spl = UnivariateSpline(x, y, k=3, s=4)
+            #xs = np.linspace(x.min(), x.max(), 1000)
 
-            yval = np.array([ant_date, plotval]).reshape(-1, 1)
-            xval = np.array([colant_val, col_value]).reshape(-1, 1)
-            lm = LinearRegression().fit(xval, yval)
-            plotpred = lm.predict(np.array([threshold]).reshape(-1, 1))[0][0]
+            def _func(x_val):
+                return spl(x_val) - threshold
+            
+            initial_guess = np.sort(plot[numerical_date_col].values)[len(plot[col_val])-1]
+            result = root(_func, initial_guess)
+
+            if result.success:
+                plotpred = result.x[0]
+            else:
+                plotpred = -997
 
             return round(plotpred)
         
@@ -536,7 +534,7 @@ class Pynomicproject:
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
                     plot, col_val, numerical_date_col, threshold
                 )
-                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
 
             # Third case if threshold is lower than the range in col_val
             elif plot[col_val].min() >= threshold:
@@ -544,7 +542,7 @@ class Pynomicproject:
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
                     plot, col_val, numerical_date_col, threshold
                 )
-                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
 
         if to_data:
             self.ldata = self.ldata.merge(
@@ -706,7 +704,7 @@ class Pynomicproject:
                                 )[0][0]
 
                                 return round(plotpred)
-                    return -999
+                    return -900
 
                 initial_guess = _inestim(plot= plot, col_val=col_val,
                                         numerical_date_col=numerical_date_col,threshold=threshold)
@@ -799,7 +797,7 @@ class Pynomicproject:
                     df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
                         plot, col_val, numerical_date_col, threshold
                     )
-                    df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
+                    df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
 
                 # Third case if threshold is lower than the range in col_val
                 elif plot[col_val].min() >= threshold:
@@ -807,7 +805,7 @@ class Pynomicproject:
                     df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
                         plot, col_val, numerical_date_col, threshold
                     )
-                    df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
+                    df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
 
             if to_data:
                 self.ldata = self.ldata.merge(
