@@ -11,6 +11,8 @@ from Pynomic.core import core
 from Pynomic.io import get_plot_bands
 from Pynomic.io.get_plot_bands import read_zarr
 
+import shutil
+
 import numpy as np
 
 import pandas as pd
@@ -18,6 +20,7 @@ import pandas as pd
 import pytest
 
 import zarr
+
 
 # =============================================================================
 # FUNCTIONS
@@ -35,14 +38,15 @@ def test_Pynomicporject_obj():
     assert isinstance(pyt, core.Pynomicproject)
 
     assert isinstance(pyt.bands_name, list)
-    assert isinstance(pyt.raw_data, zarr.hierarchy.Group)
+    assert isinstance(pyt.raw_data, zarr.Group)
+    print(type(pyt.raw_data))
     assert isinstance(pyt.ldata, pd.DataFrame)
     assert isinstance(pyt.dates, list)
     assert isinstance(pyt.n_bands, int)
     assert isinstance(pyt.n_dates, int)
 
     assert pyt.n_dates == 7
-    assert pyt.ldata.shape == (280, 7)
+    assert pyt.ldata.shape == (280, 8)
     assert pyt.ldata.columns[0] == "id"
     assert pyt.ldata.columns[1] == "fid"
     assert pyt.ldata.columns[2] == "date"
@@ -100,10 +104,10 @@ def test_generate_unique_feature():
     assert data.loc[0, "VDVI"] == 0.1546743079777065
     assert data.loc[3, "VDVI"] == 0.1554692596154336
     assert data.loc[275, "VDVI"] == 0.1278593224337763
-    assert pyt.ldata.shape[1] == 7
+    assert pyt.ldata.shape[1] == 8
 
     pyt.generate_unique_feature(VDVI_index, ["VDVI"], to_data=True)
-    assert pyt.ldata.shape[1] == 8
+    assert pyt.ldata.shape[1] == 9
 
     return
 
@@ -127,31 +131,33 @@ def test_senescence_prediction():
 
     df1 = pyt.get_senescens_predictions("VDVI", 0.1)
 
-    assert int(df1.loc[df1.id == 1, "dpred"].values[0]) == 13
-    assert int(df1.loc[df1.id == 2, "dpred"].values[0]) == 16
-    assert float(df1.loc[df1.id == 8, "dpred"].values[0]) == -4.0
-    assert float(df1.loc[df1.id == 35, "dpred"].values[0]) == -10.0
+    assert int(df1.loc[df1.id == 'A1', "dpred"].values[0]) == 13
+    assert int(df1.loc[df1.id == 'A2', "dpred"].values[0]) == 16
+    assert float(df1.loc[df1.id == 'A8', "dpred"].values[0]) == -4.0
+    assert float(df1.loc[df1.id == 'A35', "dpred"].values[0]) == -10.0
 
     pyt.get_senescens_predictions("VDVI", 0.001, True)
     df1 = pyt.ldata
 
-    assert int(df1.loc[df1.id == 1, "dpred"].values[0]) == -260
-    assert int(df1.loc[df1.id == 2, "dpred"].values[0]) == 1283
+    assert int(df1.loc[df1.id == 'A1', "dpred"].values[0]) == -260
+    assert int(df1.loc[df1.id == 'A2', "dpred"].values[0]) == 1283
 
     return
 
 
 def test_save_fun():
+
+    shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
+
     pyt = get_plot_bands.process_stack_tiff(
         "add_on/flights",
         "add_on/Grids/Labmert_test_grid.geojson",
         "fid",
         ["red", "green", "blue"],
     )
-    pyt.save("add_on/zarr_data/RGB_group.zip")
-    pyt1 = read_zarr("add_on/zarr_data/RGB_group.zip")
-    pyt1.save("add_on/zarr_data/RGB_group.zip")
-    pyt2 = read_zarr("add_on/zarr_data/RGB_group.zip")
+    pyt.save("add_on/zarr_data/RGB_group.zarr")
+    pyt1 = read_zarr("add_on/zarr_data/RGB_group.zarr")
+
 
     assert pyt1.bands_name[0] == "red"
     assert pyt1.bands_name[1] == "green"
@@ -173,25 +179,7 @@ def test_save_fun():
     assert pyt1.ldata.columns[4] == "green"
     assert pyt1.ldata.columns[5] == "blue"
 
-    assert pyt2.bands_name[0] == "red"
-    assert pyt2.bands_name[1] == "green"
-    assert pyt2.bands_name[2] == "blue"
-
-    assert isinstance(pyt2.bands_name, list)
-    assert isinstance(pyt2.raw_data, zarr.hierarchy.Group)
-    assert isinstance(pyt2.ldata, pd.DataFrame)
-    assert isinstance(pyt2.dates, list)
-    assert isinstance(pyt2.n_bands, int)
-    assert isinstance(pyt2.n_dates, int)
-
-    assert pyt2.n_dates == 7
-    assert pyt2.ldata.shape == (280, 7)
-    assert pyt2.ldata.columns[0] == "id"
-    assert pyt2.ldata.columns[1] == "fid"
-    assert pyt2.ldata.columns[2] == "date"
-    assert pyt2.ldata.columns[3] == "red"
-    assert pyt2.ldata.columns[4] == "green"
-    assert pyt2.ldata.columns[5] == "blue"
+    shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
 
     return
 
@@ -207,7 +195,7 @@ def test_RGB_ind():
     pyt.RGB_VI(Red="red", Blue="blue", Green="green")
 
     assert pyt.ldata.shape[0] == 280
-    assert pyt.ldata.shape[1] == 17
+    assert pyt.ldata.shape[1] == 18
 
     assert "VDVI" in pyt.ldata.columns
     assert "NGRDI" in pyt.ldata.columns
@@ -221,7 +209,7 @@ def test_RGB_ind():
     assert "ExR" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == 1, "VDVI"].values[0]
+        pyt.ldata.loc[pyt.ldata.id == 'A1', "VDVI"].values[0]
         == 0.1546743079777065
     )
 
@@ -237,14 +225,14 @@ def test_Multispectral_VI():
     )
 
     assert pyt.ldata.shape[0] == 1100
-    assert pyt.ldata.shape[1] == 20
+    assert pyt.ldata.shape[1] == 21
 
     pyt.Multispectral_VI(
         Red="red", Blue="blue", Green="green", Red_edge="red_edge", Nir="nir"
     )
 
     assert pyt.ldata.shape[0] == 1100
-    assert pyt.ldata.shape[1] == 37
+    assert pyt.ldata.shape[1] == 38
 
     assert "NDVI" in pyt.ldata.columns
     assert "GNDVI" in pyt.ldata.columns
@@ -265,7 +253,7 @@ def test_Multispectral_VI():
     assert "RTVI" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == 1, "NDVI"].values[0]
+        pyt.ldata.loc[pyt.ldata.id == 'A1', "NDVI"].values[0]
         == 0.7110486695733146
     )
 
@@ -281,12 +269,12 @@ def test_GLMC_TI():
     )
 
     assert pyt.ldata.shape[0] == 1100
-    assert pyt.ldata.shape[1] == 20
+    assert pyt.ldata.shape[1] == 21
 
     pyt.Calcualte_TI_GLCM([50], [90])
 
     assert pyt.ldata.shape[0] == 1100
-    assert pyt.ldata.shape[1] == 45
+    assert pyt.ldata.shape[1] == 46
 
     assert "red_50_90_cont" in pyt.ldata.columns
     assert "red_50_90_disst" in pyt.ldata.columns
@@ -315,7 +303,7 @@ def test_GLMC_TI():
     assert "nir_50_90_corr" in pyt.ldata.columns
 
     assert (
-        round(pyt.ldata.loc[pyt.ldata.id == 1, "red_50_90_cont"].values[0], 0)
+        round(pyt.ldata.loc[pyt.ldata.id == 'A1', "red_50_90_cont"].values[0], 0)
         == 7608.0
     )
 

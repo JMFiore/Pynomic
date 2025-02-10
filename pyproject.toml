@@ -44,7 +44,8 @@ dependencies = [
     "pandas-geojson",
     "scikit-image",
     "geopandas",
-    "pyarrow"
+    "pyarrow",
+    "statsmodels"
 ]
 
 [tool.setuptools]

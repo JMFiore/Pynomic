@@ -197,20 +197,26 @@ class Pynomicplotter:
         Red: str,
         Green: str,
         Blue: str,
-        Size = (),
+        Size=(),
         ax=None,
         days=False,
         vmin=0,
         vmax=255,
         **kwargs,
     ):
-        """Generate a time line of images with line plot.
+        """Generate a time line of images with line plot showing a RGB function by default.
 
         Parameters
         ----------
             band_name: str | the name of the band in ldata to plot.
 
             n_id: int | id of the plot.
+
+            Red: str | red band name
+
+            Green: str | green band name
+
+            Blue: str | blue band name
 
             days: bool| default False converts the x axis.
 
@@ -224,9 +230,9 @@ class Pynomicplotter:
         -------
             plot and axis
         """
-        def _rgb_view(df, red1, blue1, green1, size:tuple):
+        def _rgb_view(df, red1, blue1, green1, size: tuple):
 
-            if len(size) > 0 :
+            if len(size) > 0:
 
                 up = size[0]
                 down = size[1]
@@ -260,7 +266,7 @@ class Pynomicplotter:
                     green *= (255.0/green.max())
                     green = np.uint8(green.astype(int))
 
-            image = np.dstack([red,green,blue])
+            image = np.dstack([red, green, blue])
 
             return image
         
@@ -278,8 +284,8 @@ class Pynomicplotter:
                         self.raw_data["dates"][dat][n_id][band][:]
                     )
                 imlist.append(function(dict(zip(bands_names, bands_arr)),
-                                        red1 = Red, green1 = Green, blue1= Blue,
-                                        size = Size))
+                            red1=Red, green1=Green, blue1=Blue,
+                            size=Size))
             return imlist
 
         array_list = _get_arrays(self._summary, n_id=n_id, function=_rgb_view)

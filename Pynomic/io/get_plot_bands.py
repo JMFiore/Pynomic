@@ -268,7 +268,8 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
             ]
             mp_bands = []
             # Numerical id for project.
-            mp_bands.append(pos + 1)
+            id_str = 'A'+str(pos+1)
+            mp_bands.append(id_str)
             # Original id from the grid can be numerical or text or both.
             mp_bands.append(g)
             # gets the date
@@ -285,7 +286,7 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
     geodat[col_id] = geodat[col_id].astype(str)
 
     df = geodat.merge(df1, on=col_id)
-    df = df.loc[:,[*df1.columns.values, *geodat.drop(columns= col_id).columns.values]]
+    df = df.loc[:, [*df1.columns.values, *geodat.drop(columns=col_id).columns.values]]
     return array_dict, bands_name, df
 
 
@@ -320,10 +321,11 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
         raw_data["dates"].create_group(date_key)
 
         for plot_id in to_raw_data.keys():
-            raw_data["dates"][date_key].create_group(plot_id)
+            c = 'A'+str(plot_id)
+            raw_data["dates"][date_key].create_group(c)
             for band in to_raw_data[plot_id].keys():
-                raw_data["dates"][date_key][plot_id].create_group(band)
-                raw_data["dates"][date_key][plot_id][band] = to_raw_data[
+                raw_data["dates"][date_key][c].create_group(band)
+                raw_data["dates"][date_key][c][band] = to_raw_data[
                     plot_id
                 ][band]
         #ldata_bands = ldata_bands.reset_index().drop(columns= 'index', axis = 1)
@@ -331,7 +333,7 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
 
 
     df_data = pd.concat(ldata, axis=0).reset_index().drop(columns='index')
-    
+
 
     return core.Pynomicproject(
         raw_data=raw_data,
@@ -354,7 +356,7 @@ def read_zarr(path):
         Pynomicproject object
     """
     store = zarr.open_group(path, mode="a")
-    
+
 
     ## Transforms the dataframe from bytes to pandas dataframe
     df_buffer = io.BytesIO()

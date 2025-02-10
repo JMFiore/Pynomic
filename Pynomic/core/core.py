@@ -37,14 +37,14 @@ class Pynomicproject:
 
     Parameters
     ----------
-    raw_data : dict-like
+    raw_data : zarr.hierarchy.Group
         contains all the data.
 
     ldata : Pandas Dataframe
         contains all the procesed data.
     """
 
-    raw_data: zarr.hierarchy
+    raw_data: zarr.Group
     ldata: pd.DataFrame
     n_dates: int
     dates: list
@@ -256,7 +256,7 @@ class Pynomicproject:
         features_names.insert(1, "date")
 
         tidf = pd.DataFrame(values_list, columns=features_names)
-        tidf.id = tidf.id.astype(int)
+        #tidf.id = tidf.id.astype(int)
         self.ldata = self.ldata.merge(tidf,
                          on =['id', 'date'])
         return self.ldata
@@ -341,7 +341,7 @@ class Pynomicproject:
 
 
         tidf = pd.DataFrame(values_list, columns=features_names)
-        tidf.id = tidf.id.astype(int)
+        #tidf.id = tidf.id.astype(int)
 
         if to_data:
             self.ldata = self.ldata.merge(tidf,
@@ -391,7 +391,7 @@ class Pynomicproject:
             if to_data:
 
                 df = pd.DataFrame(values_list, columns=features_names)
-                df.id = df.id.astype(int)
+                # df.id = df.id.astype(int)
                 self.ldata = self.ldata.merge(df, on=["id", "date"])
                 return self.ldata
 
@@ -465,8 +465,8 @@ class Pynomicproject:
 
             def _func(x_val):
                 return spl(x_val) - threshold
-            
-            initial_guess = np.sort(plot[numerical_date_col].values)[0]
+
+            initial_guess = sorted(list(x), reverse=True)[0]
             result = root(_func, initial_guess)
 
 
@@ -487,7 +487,7 @@ class Pynomicproject:
             def _func(x_val):
                 return spl(x_val) - threshold
             
-            initial_guess = np.sort(plot[numerical_date_col].values)[len(plot[col_val])-1]
+            initial_guess = sorted(list(x), reverse=False)[0]
             result = root(_func, initial_guess)
 
             if result.success:
