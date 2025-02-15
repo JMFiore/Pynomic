@@ -12,10 +12,10 @@ You need Python 3.9+ to run Pynomic
 ## Basic install
 You can find Pynomic in PyPl. The standard installation
 
-$ pip install Pynomic
+ $ pip install Pynomic
 
 
 ## Developer Installation 
 Clone this repo. Move to the file and execute
 
-$ pip install e .
+ $ pip install e .
