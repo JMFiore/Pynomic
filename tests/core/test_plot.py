@@ -92,3 +92,48 @@ def test_timeline():
     axis_days = pyt.plot.timeline("VDVI", "A3", days=True)
     assert axis_days.get_xlabel() == "Flight days"
     return
+
+
+def test_timeline_RGB():
+
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/flights",
+        "add_on/Grids/Labmert_test_grid.geojson",
+        "fid",
+        ["red", "green", "blue"],
+    )
+
+    def VDVI_inex(df):
+        red = np.mean(df["red"])
+        green = np.mean(df["green"])
+        blue = np.mean(df["blue"])
+
+        return [(2 * green - red - blue) / (2 * green + red + blue)]
+
+    pyt.generate_unique_feature(VDVI_inex, ["VDVI"], to_data=True)
+
+    axis = pyt.plot.RGB_image_timeline(
+        "VDVI", "A3", Red="red", Green="green", Blue="blue", days=True
+    )
+
+    assert axis[1].get_xlabel() == "Flight days"
+    assert axis[1].get_title() == ""
+    assert axis[1].get_ylabel() == "VDVI"
+    assert axis[1].get_yscale() == "linear"
+
+    axis = pyt.plot.RGB_image_timeline(
+        "VDVI",
+        "A3",
+        Red="red",
+        Green="green",
+        Blue="blue",
+        days=True,
+        Size=(0, 180, 0, 45),
+    )
+
+    assert axis[1].get_xlabel() == "Flight days"
+    assert axis[1].get_title() == ""
+    assert axis[1].get_ylabel() == "VDVI"
+    assert axis[1].get_yscale() == "linear"
+
+    return

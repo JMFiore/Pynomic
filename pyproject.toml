@@ -38,13 +38,12 @@ dependencies = [
     "matplotlib",
     "shapely",
     "pillow",
-    "zarr",
+    "zarr==2.18.2",
     "scikit-learn",
     "opencv-python",
     "pandas-geojson",
     "scikit-image",
     "geopandas",
-    "pyarrow",
     "statsmodels"
 ]
 

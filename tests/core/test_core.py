@@ -7,8 +7,13 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
+import os
+import shutil
+
+import Pynomic
 from Pynomic.core import core
 from Pynomic.io import get_plot_bands
+
 
 import numpy as np
 
@@ -17,7 +22,6 @@ import pandas as pd
 import pytest
 
 import zarr
-
 
 
 # =============================================================================
@@ -99,9 +103,24 @@ def test_generate_unique_feature():
 
     assert isinstance(data, pd.DataFrame)
 
-    data.loc[(data.id == 'A1') & (data.date == '20180815'), 'VDVI'].values[0] == 0.1546743079777065
-    assert data.loc[(data.id == 'A3') & (data.date == '20180815'), 'VDVI'].values[0] == 0.15057698741228298
-    data.loc[(data.id == 'A23') & (data.date == '20180815'), 'VDVI'].values[0] == 0.11958853280011712
+    assert (
+        data.loc[(data.id == "A1") & (data.date == "20180815"), "VDVI"].values[
+            0
+        ]
+        == 0.1546743079777065
+    )
+    assert (
+        data.loc[(data.id == "A3") & (data.date == "20180815"), "VDVI"].values[
+            0
+        ]
+        == 0.15057698741228298
+    )
+    assert (
+        data.loc[
+            (data.id == "A23") & (data.date == "20180815"), "VDVI"
+        ].values[0]
+        == 0.11958853280011712
+    )
     assert pyt.ldata.shape[1] == 8
 
     pyt.generate_unique_feature(VDVI_index, ["VDVI"], to_data=True)
@@ -126,28 +145,27 @@ def test_senescence_prediction():
 
     pyt.generate_unique_feature(VDVI_index, ["VDVI"], True)
 
-    df1 = pyt.get_senescens_predictions("VDVI", 0.1)
+    df1 = pyt.get_threshold_estimation("VDVI", 0.1)
 
-    assert int(df1.loc[df1.id == 'A1', "dpred"].values[0]) == 26
-    assert int(df1.loc[df1.id == 'A2', "dpred"].values[0]) == 27
-    assert float(df1.loc[df1.id == 'A8', "dpred"].values[0]) == -1
-    assert float(df1.loc[df1.id == 'A35', "dpred"].values[0]) == -2
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 26
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 27
+    assert float(df1.loc[df1.id == "A8", "dpred"].values[0]) == -1
+    assert float(df1.loc[df1.id == "A35", "dpred"].values[0]) == -2
 
-    pyt.get_senescens_predictions("VDVI", 0.001, True)
+    pyt.get_threshold_estimation("VDVI", 0.001, True)
     df1 = pyt.ldata
 
-    assert int(df1.loc[df1.id == 'A1', "dpred"].values[0]) == 39
-    assert int(df1.loc[df1.id == 'A2', "dpred"].values[0]) == 40
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 39
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 40
 
     return
 
 
-"""
 def test_save_fun():
 
-    dirlist = os.listdir('add_on/zarr_data')
-    if 'RGB_group.zarr' in dirlist:
-        shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
+    dirlist = os.listdir("add_on/zarr_data")
+    if "RGB_group" in dirlist:
+        shutil.rmtree("add_on/zarr_data/RGB_group", ignore_errors=False)
 
     pyt = get_plot_bands.process_stack_tiff(
         "add_on/flights",
@@ -155,9 +173,8 @@ def test_save_fun():
         "fid",
         ["red", "green", "blue"],
     )
-    pyt.save("add_on/zarr_data/RGB_group.zarr")
-    pyt1 = read_zarr("add_on/zarr_data/RGB_group.zarr")
-
+    pyt.save("add_on/zarr_data/RGB_group")
+    pyt1 = Pynomic.read_zarr("add_on/zarr_data/RGB_group")
 
     assert pyt1.bands_name[0] == "red"
     assert pyt1.bands_name[1] == "green"
@@ -171,7 +188,7 @@ def test_save_fun():
     assert isinstance(pyt1.n_dates, int)
 
     assert pyt1.n_dates == 7
-    assert pyt1.ldata.shape == (280, 7)
+    assert pyt1.ldata.shape == (280, 8)
     assert pyt1.ldata.columns[0] == "id"
     assert pyt1.ldata.columns[1] == "fid"
     assert pyt1.ldata.columns[2] == "date"
@@ -179,10 +196,9 @@ def test_save_fun():
     assert pyt1.ldata.columns[4] == "green"
     assert pyt1.ldata.columns[5] == "blue"
 
-    shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
+    shutil.rmtree("add_on/zarr_data/RGB_group", ignore_errors=False)
 
     return
-"""
 
 
 def test_RGB_ind():
@@ -210,7 +226,7 @@ def test_RGB_ind():
     assert "ExR" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == 'A1', "VDVI"].values[0]
+        pyt.ldata.loc[pyt.ldata.id == "A1", "VDVI"].values[0]
         == 0.1546743079777065
     )
 
@@ -254,7 +270,7 @@ def test_Multispectral_VI():
     assert "RTVI" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == 'A1', "NDVI"].values[0]
+        pyt.ldata.loc[pyt.ldata.id == "A1", "NDVI"].values[0]
         == 0.7110486695733146
     )
 
@@ -304,8 +320,100 @@ def test_GLMC_TI():
     assert "nir_50_90_corr" in pyt.ldata.columns
 
     assert (
-        round(pyt.ldata.loc[pyt.ldata.id == 'A1', "red_50_90_cont"].values[0], 0)
+        round(
+            pyt.ldata.loc[pyt.ldata.id == "A1", "red_50_90_cont"].values[0], 0
+        )
         == 7608.0
     )
+
+    return
+
+
+def test_calc_green_px():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/flights",
+        "add_on/Grids/Labmert_test_grid.geojson",
+        "fid",
+        ["red", "green", "blue"],
+    )
+
+    dat = pyt.Calcualte_green_pixels(
+        Red="red", Blue="blue", Green="green", image_shape=(0, 180, 0, 45)
+    )
+
+    vals = dat.N_green_px + dat.N_non_green_px
+    assert vals.values[0] == 8100
+    assert (
+        dat.loc[
+            (dat.id == "A1") & (dat.date == "20180815"), "perc_green"
+        ].values[0]
+        == 0.77
+    )
+
+    return
+
+
+def test_senescence_prediction_splines():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/flights",
+        "add_on/Grids/Labmert_test_grid.geojson",
+        "fid",
+        ["red", "green", "blue"],
+    )
+
+    def VDVI_index(df):
+        red = np.mean(df["red"])
+        green = np.mean(df["green"])
+        blue = np.mean(df["blue"])
+
+        return [(2 * green - red - blue) / (2 * green + red + blue)]
+
+    pyt.generate_unique_feature(VDVI_index, ["VDVI"], True)
+
+    df1 = pyt.get_senescens_Splines_predictions("VDVI", 0.1)
+
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 24
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 26
+    assert float(df1.loc[df1.id == "A8", "dpred"].values[0]) == -1
+    assert float(df1.loc[df1.id == "A35", "dpred"].values[0]) == -2
+
+    pyt.get_senescens_Splines_predictions("VDVI", 0.001, True)
+    df1 = pyt.ldata
+
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 39
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 40
+
+    return
+
+
+def test_senescence_prediction_loess():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/flights",
+        "add_on/Grids/Labmert_test_grid.geojson",
+        "fid",
+        ["red", "green", "blue"],
+    )
+
+    def VDVI_index(df):
+        red = np.mean(df["red"])
+        green = np.mean(df["green"])
+        blue = np.mean(df["blue"])
+
+        return [(2 * green - red - blue) / (2 * green + red + blue)]
+
+    pyt.generate_unique_feature(VDVI_index, ["VDVI"], True)
+
+    df1 = pyt.get_senescens_Loess_predictions("VDVI", 0.1)
+
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 17
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 20
+    assert float(df1.loc[df1.id == "A8", "dpred"].values[0]) == -1
+    assert float(df1.loc[df1.id == "A35", "dpred"].values[0]) == -3
+
+    pyt.get_senescens_Loess_predictions("VDVI", 0.001, to_data=True)
+    df1 = pyt.ldata
+
+    assert int(df1.loc[df1.id == "A1", "dpred"].values[0]) == 43
+    assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 44
 
     return

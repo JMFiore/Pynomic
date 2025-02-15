@@ -16,7 +16,6 @@ import pandas as pd
 import numpy as np
 import zarr
 from sklearn.linear_model import LinearRegression
-import io
 import os
 from PIL import Image
 from skimage.feature import graycomatrix, graycoprops
@@ -25,6 +24,7 @@ from scipy.interpolate import UnivariateSpline
 from scipy.optimize import root
 from statsmodels.nonparametric.smoothers_lowess import lowess
 from scipy.interpolate import interp1d
+import json
 
 # =============================================================================
 # CLASSES
@@ -369,19 +369,19 @@ class Pynomicproject:
                 )
             else:
                 red1 = dicmtx[red][
-                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
                 ]
                 red1 = cv2.normalize(
                     red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
                 )
                 green1 = dicmtx[green][
-                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
                 ]
                 green1 = cv2.normalize(
                     green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
                 )
                 blue1 = dicmtx[blue][
-                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
                 ]
                 blue1 = cv2.normalize(
                     blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
@@ -399,7 +399,7 @@ class Pynomicproject:
                 val255 = mask == 255
                 val255 = int(val255.sum())
                 val0 = mask == 0
-                val0 = int(mask.sum())
+                val0 = int(val0.sum())
                 por = val255 / (mask.shape[0] * mask.shape[1])
                 return [np.round(por, 2), val255, val0]
             else:
@@ -500,7 +500,7 @@ class Pynomicproject:
         else:
             return print("feature_names is not a list")
 
-    def get_senescens_predictions(
+    def get_threshold_estimation(
         self, band: str, threshold: float, to_data: bool = False, from_day=0
     ):
         """Generates predictions of senecense by providing threshold and index.
@@ -520,7 +520,9 @@ class Pynomicproject:
         """
 
         def _case_in(plot, col_val, numerical_date_col, threshold):
-            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True
+            ).reset_index()
             for plotpos, plotval in enumerate(plot[numerical_date_col].values):
                 if (
                     plot.loc[
@@ -555,7 +557,9 @@ class Pynomicproject:
             return -999
 
         def _case_upper(plot, col_val, numerical_date_col, threshold):
-            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True
+            ).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
@@ -576,7 +580,9 @@ class Pynomicproject:
             return round(plotpred)
 
         def _case_lower(plot, col_val, numerical_date_col, threshold):
-            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True
+            ).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
@@ -679,31 +685,18 @@ class Pynomicproject:
         -------
             a zipped folder in the path given.
         """
-        if "bands_name" not in list(self.raw_data.array_keys()):
-            self.raw_data.create_group("bands_name")
-            self.raw_data["bands_name"] = self.bands_name
+        out_store = zarr.DirectoryStore(path + '/' + 'raw_data')
+        zarr.copy_store(self.raw_data.store, out_store)
 
-            df_buffer = io.BytesIO()
-            self.ldata.to_parquet(df_buffer, engine="pyarrow")
-            self.raw_data.create_group("ldata")
-            self.raw_data["ldata"] = [df_buffer.getbuffer().tobytes()]
+        self.ldata.to_file(path + '/' + 'ldata.shp', driver='ESRI Shapefile')
+        prop_dic = {'dates': self.dates,
+                    'bands': self.bands_name,
+                    }
+        with open(path+'/'+'obj_properties.json', mode='w') as outfile:
+            json.dump(prop_dic, outfile)
 
-            out_store = zarr.DirectoryStore(path)
-            zarr.copy_store(self.raw_data.store, out_store)
 
-            return
-
-        else:
-            self.raw_data["bands_name"] = self.bands_name
-
-            df_buffer = io.BytesIO()
-            self.ldata.to_parquet(df_buffer, engine="pyarrow")
-            self.raw_data["ldata"] = [df_buffer.getbuffer().tobytes()]
-
-            out_store = zarr.DirectoryStore(path)
-            zarr.copy_store(self.raw_data.store, out_store)
-
-            return
+        return
 
     def save_plots_as_tiff(self, folder_path, fun, identification_col):
         """Creates as many folders as dates in path provided and saves the plot images.
@@ -743,7 +736,7 @@ class Pynomicproject:
     def get_senescens_Splines_predictions(
         self, band: str, threshold: float, to_data: bool = False, from_day=0
     ):
-        """Generates predictions of senecense by providing threshold and index.
+        """Generates predictions of senecense by providing threshold using the spline method.
 
         Parameters
         ----------
@@ -760,7 +753,8 @@ class Pynomicproject:
         """
 
         def _case_in(plot, col_val, numerical_date_col, threshold):
-
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True)
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
@@ -770,7 +764,7 @@ class Pynomicproject:
             def _func(x_val):
                 return spl(x_val) - threshold
 
-            ### INITIAL GUESS ESTIMATOR ####
+            # # INITIAL GUESS ESTIMATOR ##
             def _inestim(plot, col_val, numerical_date_col, threshold):
 
                 for plotpos, plotval in enumerate(
@@ -829,7 +823,9 @@ class Pynomicproject:
             return round(plotpred)
 
         def _case_upper(plot, col_val, numerical_date_col, threshold):
-
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True
+            ).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
@@ -839,9 +835,7 @@ class Pynomicproject:
             def _func(x_val):
                 return spl(x_val) - threshold
 
-            initial_guess = np.sort(plot[numerical_date_col].values)[
-                len(plot[col_val]) - 1
-            ]
+            initial_guess = x.astype(int).min()
             result = root(_func, initial_guess)
 
             if result.success:
@@ -852,6 +846,9 @@ class Pynomicproject:
             return round(plotpred)
 
         def _case_lower(plot, col_val, numerical_date_col, threshold):
+            plot = plot.sort_values(
+                numerical_date_col, ascending=True
+            ).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
@@ -861,15 +858,13 @@ class Pynomicproject:
             def _func(x_val):
                 return spl(x_val) - threshold
 
-            initial_guess = np.sort(plot[numerical_date_col].values)[
-                len(plot[col_val]) - 1
-            ]
+            initial_guess = x.astype(int).max()
             result = root(_func, initial_guess)
 
             if result.success:
                 plotpred = result.x[0]
             else:
-                plotpred = 0
+                plotpred = -997
 
             return round(plotpred)
 
@@ -937,7 +932,7 @@ class Pynomicproject:
         else:
             return df1
 
-    def get_senescens_Lowess_predictions(
+    def get_senescens_Loess_predictions(
         self,
         band: str,
         threshold: float,
@@ -945,7 +940,7 @@ class Pynomicproject:
         to_data: bool = False,
         from_day=0,
     ):
-        """Generates predictions of senecense by providing threshold and index.
+        """Generates predictions of senecense by providing threshold.
 
         Parameters
         ----------

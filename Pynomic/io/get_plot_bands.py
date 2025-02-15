@@ -138,7 +138,6 @@ def auto_fit_image(mtx, hbuffer=2, wbuffer=2):
     -------
         tuple with croping parameters. Angle value.
     """
-
     gray = np.where(mtx <= 0, mtx, 255)
 
     gray = np.uint8(np.where(gray > 0, gray, 0))
@@ -354,18 +353,18 @@ def read_zarr(path):
     -------
         Pynomicproject object
     """
-    store = zarr.open_group(path, mode="a")
+    store = zarr.open_group(path + '/' + 'raw_data', mode="a")
 
-    ## Transforms the dataframe from bytes to pandas dataframe
-    df_buffer = io.BytesIO()
-    df_buffer.write(store["ldata"][0])
-    ldata = gdp.read_parquet(df_buffer)
+    data1 = gdp.read_file(path + '/' + 'ldata.shp')
+
+    with open(path + '/' + 'obj_properties.json', 'r') as file:
+        prop = dict(json.load(file))
 
     return core.Pynomicproject(
         raw_data=store,
-        ldata=ldata.copy(),
-        n_dates=len(ldata.date.unique()),
-        dates=list(ldata.date.unique()),
-        n_bands=len(store.bands_name[:]),
-        bands_name=[str(b) for b in store.bands_name[:]],
+        ldata=data1.copy(),
+        n_dates=len(prop['dates']),
+        dates=prop['dates'],
+        n_bands=len(prop['bands']),
+        bands_name=prop['bands'],
     )
