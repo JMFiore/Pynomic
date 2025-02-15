@@ -58,7 +58,8 @@ def _read_grid(gpath, col_id: str):
     else:
         raise ValueError("Grid is not a geojson file")
 
-def _read_grid2(gpath, col_id:str):
+
+def _read_grid2(gpath, col_id: str):
     """Reads a geojson and shape files.
 
     Args:
@@ -72,12 +73,12 @@ def _read_grid2(gpath, col_id:str):
     df = gdp.read_file(gpath)
     df[col_id] = df[col_id].astype(str)
     geodf = df.copy()
-    poligons_dict = df.copy().set_index(col_id).loc[: , 'geometry'].to_dict()
+    poligons_dict = df.copy().set_index(col_id).loc[:, "geometry"].to_dict()
 
     return geodf, poligons_dict
 
 
-def _read_grids(gpath, col_id:str):
+def _read_grids(gpath, col_id: str):
     """Reads a geojson file or shape file.
 
     Args:
@@ -89,8 +90,7 @@ def _read_grids(gpath, col_id:str):
         dict-like object with id and coords of each plot.
     """
     data = gdp.read_file(gpath)
-    data_dic = data.loc[:,[col_id, 'geometry']].copy().to_dict(index= False)
-
+    data_dic = data.loc[:, [col_id, "geometry"]].copy().to_dict(index=False)
 
 
 def _get_dataframe_from_json(path_gjson):
@@ -100,7 +100,7 @@ def _get_dataframe_from_json(path_gjson):
     keep = []
     for c in dfg.columns:
         for m in collist:
-            if len(c.split("."+m)) > 1:
+            if len(c.split("." + m)) > 1:
                 keep.append(c)
     dfa = dfg.loc[:, keep].copy()
     dfa.columns = collist
@@ -227,11 +227,10 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
                 if interp == rasterio.enums.ColorInterp.alpha:
                     contains_alpha_band = idx - 1
 
-            if grids[g].geom_type == 'MultiPolygon':
+            if grids[g].geom_type == "MultiPolygon":
                 figure = grids[g]
             else:
                 figure = MultiPolygon([grids[g]])
-
 
             if contains_alpha_band != -1:
                 # Diferentiate the true bands form the mask band.
@@ -268,7 +267,7 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
             ]
             mp_bands = []
             # Numerical id for project.
-            id_str = 'A'+str(pos+1)
+            id_str = "A" + str(pos + 1)
             mp_bands.append(id_str)
             # Original id from the grid can be numerical or text or both.
             mp_bands.append(g)
@@ -286,7 +285,9 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
     geodat[col_id] = geodat[col_id].astype(str)
 
     df = geodat.merge(df1, on=col_id)
-    df = df.loc[:, [*df1.columns.values, *geodat.drop(columns=col_id).columns.values]]
+    df = df.loc[
+        :, [*df1.columns.values, *geodat.drop(columns=col_id).columns.values]
+    ]
     return array_dict, bands_name, df
 
 
@@ -321,19 +322,17 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
         raw_data["dates"].create_group(date_key)
 
         for plot_id in to_raw_data.keys():
-            c = 'A'+str(plot_id)
+            c = "A" + str(plot_id)
             raw_data["dates"][date_key].create_group(c)
             for band in to_raw_data[plot_id].keys():
                 raw_data["dates"][date_key][c].create_group(band)
-                raw_data["dates"][date_key][c][band] = to_raw_data[
-                    plot_id
-                ][band]
-        #ldata_bands = ldata_bands.reset_index().drop(columns= 'index', axis = 1)
+                raw_data["dates"][date_key][c][band] = to_raw_data[plot_id][
+                    band
+                ]
+        # ldata_bands = ldata_bands.reset_index().drop(columns= 'index', axis = 1)
         ldata.append(ldata_bands)
 
-
-    df_data = pd.concat(ldata, axis=0).reset_index().drop(columns='index')
-
+    df_data = pd.concat(ldata, axis=0).reset_index().drop(columns="index")
 
     return core.Pynomicproject(
         raw_data=raw_data,
@@ -356,7 +355,6 @@ def read_zarr(path):
         Pynomicproject object
     """
     store = zarr.open_group(path, mode="a")
-
 
     ## Transforms the dataframe from bytes to pandas dataframe
     df_buffer = io.BytesIO()

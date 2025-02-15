@@ -96,31 +96,23 @@ class Pynomicproject:
         green = df.loc[:, Green]
 
         # Visible-band difference vegetation index
-        df["VDVI"] = (2 * green - red - blue) / (
-            2 * green + red + blue)
+        df["VDVI"] = (2 * green - red - blue) / (2 * green + red + blue)
         # Normalized green–red difference index (Kawashima Index) also called GRVI
-        df["NGRDI"] = (green - red) / (
-            green + red)
+        df["NGRDI"] = (green - red) / (green + red)
         # Visible Atmospherically Resistant Index
-        df["VARI"] = (green - red) / (
-            green + red - blue)
+        df["VARI"] = (green - red) / (green + red - blue)
         # Green–red ratio index
         df["GRRI"] = green / red
         # Vegetativen
-        df["VEG"] = green / (
-            (red**0.667) * (blue ** (1 - 0.667)))
+        df["VEG"] = green / ((red**0.667) * (blue ** (1 - 0.667)))
         # Modified Green Red Vegetation Index
-        df["MGRVI"] = ((green**2) - (red**2)) / (
-            (green**2) + (blue**2))
+        df["MGRVI"] = ((green**2) - (red**2)) / ((green**2) + (blue**2))
         # Green Leaf Index
-        df["GLI"] = (2 * green - red - blue) / (
-            (-red) - blue)
+        df["GLI"] = (2 * green - red - blue) / ((-red) - blue)
         # Excess Red Vegetation Index
-        df["ExR"] = (1.4 * red - green) / (
-            green + red + blue)
+        df["ExR"] = (1.4 * red - green) / (green + red + blue)
         # Excess Blue Vegetation Index
-        df["ExB"] = (1.4 * blue - green) / (
-            green + red + blue)
+        df["ExB"] = (1.4 * blue - green) / (green + red + blue)
         # Excess Green Vegetation Index
         df["ExG"] = 2 * green - red - blue
 
@@ -158,43 +150,47 @@ class Pynomicproject:
         # GNDVI
         df["GNDVI"] = (nir - green) / (nir + green)
         # NDRE
-        df['NDRE'] = (nir - redge) / (nir + redge)
+        df["NDRE"] = (nir - redge) / (nir + redge)
         # EVI_2
-        df["EVI_2"] = 2.5 * ((nir - red)/(nir + (2.4*red) + 1))
+        df["EVI_2"] = 2.5 * ((nir - red) / (nir + (2.4 * red) + 1))
         # SAVI
-        df["SAVI"] = (1.5 * (nir - red))/(nir + red + 0.5)
+        df["SAVI"] = (1.5 * (nir - red)) / (nir + red + 0.5)
         # OSAVI
-        df["OSAVI"] = (1.16 * (nir - red))/ (nir + red + 0.16)
+        df["OSAVI"] = (1.16 * (nir - red)) / (nir + red + 0.16)
         # TDVI
-        df["TDVI"] = np.sqrt((0.5 + ((nir-red)/(nir + red))))
+        df["TDVI"] = np.sqrt((0.5 + ((nir - red) / (nir + red))))
         # NIRV
         df["NIRv"] = nir * ((nir - red) / (nir + red))
         # Simple ratio
         df["SR"] = nir / red
         # SRredge Simple ratio Red edge
-        df['SRredge'] = nir / redge
+        df["SRredge"] = nir / redge
         # EVI Enhanced vegetation index
         df["EVI"] = 2.5 * ((nir - red) / (nir + 6 * red - 7.5 * blue + 1))
         # GNDRE Green Normalized difference Red Edge index
         df["GNDRE"] = (redge - green) / (redge + green)
         # MCARI2 Modified Chlorophyll Absorption Ratio Index
-        df["MCARI2"] = 1.5 * ((2.5 * (nir - red)) - (1.3 * (nir - green)) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red))) - 0.5))
-        # MTVI Modified Triangular Vegetation Index  
+        df["MCARI2"] = 1.5 * (
+            (2.5 * (nir - red))
+            - (1.3 * (nir - green))
+            / np.sqrt(((((2 * nir) + 1) ** 2) - ((6 * nir) - (5 * red))) - 0.5)
+        )
+        # MTVI Modified Triangular Vegetation Index
         df["MTVI"] = 1.2 * ((1.2 * (nir - green)) - (2.5 * (red - green)))
         # MTVI2  Modified Triangular Vegetation Index
-        df["MTVI2"] = (1.5 * ((1.2 * (nir - green)) - (2.5 * (red - green)))) / np.sqrt(((((2 * nir) + 1)**2) - ((6 * nir) - (5 * red))) - 0.5)
+        df["MTVI2"] = (
+            1.5 * ((1.2 * (nir - green)) - (2.5 * (red - green)))
+        ) / np.sqrt(((((2 * nir) + 1) ** 2) - ((6 * nir) - (5 * red))) - 0.5)
         # NDRE Normalized Difference Red Edge index
-        df['NDRE'] = (nir - redge) / (nir + redge)
+        df["NDRE"] = (nir - redge) / (nir + redge)
         # RDVI Renormalized Difference Vegetation Index
         df["RDVI"] = (nir - red) / np.sqrt(nir - red)
         # RTVI Red Edge Triangulated vegetation Index
-        df['RTVI'] = (100 * (nir - redge)) - (10 * (nir - green))
+        df["RTVI"] = (100 * (nir - redge)) - (10 * (nir - green))
 
         return
 
-    def Calcualte_TI_GLCM(
-        self, distances: list, angles: list
-    ):
+    def Calcualte_TI_GLCM(self, distances: list, angles: list):
         """Calculates texturial indices from bands.
 
         be aweare the O = (n_dist * n_bands)^n_angles.
@@ -206,12 +202,13 @@ class Pynomicproject:
             list of distances to work usaly 2 or 3 .
         algles: lsit
             list of angles to work.
-    
+
         Returns
         -------
             dataframe with the new variables.
         """
-        def _calculate_GLCM(df,angles, distances, bands):
+
+        def _calculate_GLCM(df, angles, distances, bands):
             features_names = []
             glcm_values = []
             for angl in angles:
@@ -219,21 +216,76 @@ class Pynomicproject:
                     for b in bands:
                         gray = df[b][:].copy()
                         if not np.issubdtype(gray.dtype, np.uint8):
-                            gray *= (255/np.round(gray, 6).max())
+                            gray *= 255 / np.round(gray, 6).max()
                             gray = np.uint8(np.round(gray, 0).astype(int))
-                        glcm = graycomatrix(gray, distances=[dist],
-                                            angles=[angl], levels=256,
-                                            symmetric=True, normed=True)
-                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'cont')
-                        glcm_values.append(round(graycoprops(glcm, 'contrast')[0][0], 4))
-                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'disst')
-                        glcm_values.append(round(graycoprops(glcm, 'dissimilarity')[0][0], 4))
-                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'homog')
-                        glcm_values.append(round(graycoprops(glcm, 'homogeneity')[0][0], 4))
-                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'energy')
-                        glcm_values.append(round(graycoprops(glcm, 'energy')[0][0], 4))
-                        features_names.append(b + "_" + str(dist) + "_" + str(angl) + "_" + 'corr')
-                        glcm_values.append(round(graycoprops(glcm, 'correlation')[0][0], 4))
+                        glcm = graycomatrix(
+                            gray,
+                            distances=[dist],
+                            angles=[angl],
+                            levels=256,
+                            symmetric=True,
+                            normed=True,
+                        )
+                        features_names.append(
+                            b
+                            + "_"
+                            + str(dist)
+                            + "_"
+                            + str(angl)
+                            + "_"
+                            + "cont"
+                        )
+                        glcm_values.append(
+                            round(graycoprops(glcm, "contrast")[0][0], 4)
+                        )
+                        features_names.append(
+                            b
+                            + "_"
+                            + str(dist)
+                            + "_"
+                            + str(angl)
+                            + "_"
+                            + "disst"
+                        )
+                        glcm_values.append(
+                            round(graycoprops(glcm, "dissimilarity")[0][0], 4)
+                        )
+                        features_names.append(
+                            b
+                            + "_"
+                            + str(dist)
+                            + "_"
+                            + str(angl)
+                            + "_"
+                            + "homog"
+                        )
+                        glcm_values.append(
+                            round(graycoprops(glcm, "homogeneity")[0][0], 4)
+                        )
+                        features_names.append(
+                            b
+                            + "_"
+                            + str(dist)
+                            + "_"
+                            + str(angl)
+                            + "_"
+                            + "energy"
+                        )
+                        glcm_values.append(
+                            round(graycoprops(glcm, "energy")[0][0], 4)
+                        )
+                        features_names.append(
+                            b
+                            + "_"
+                            + str(dist)
+                            + "_"
+                            + str(angl)
+                            + "_"
+                            + "corr"
+                        )
+                        glcm_values.append(
+                            round(graycoprops(glcm, "correlation")[0][0], 4)
+                        )
             return glcm_values, features_names
 
         values_list = []
@@ -242,12 +294,16 @@ class Pynomicproject:
                 bands_names = []
                 bands_arr = []
                 for band in self.bands_name:
-                        bands_names.append(band)
-                        bands_arr.append(
-                            self.raw_data["dates"][flight_date][plot][band][:]
-                        )
-                values, features_names= _calculate_GLCM(df = dict(zip(bands_names, bands_arr)), distances = distances,
-                                          angles = angles, bands = self.bands_name)
+                    bands_names.append(band)
+                    bands_arr.append(
+                        self.raw_data["dates"][flight_date][plot][band][:]
+                    )
+                values, features_names = _calculate_GLCM(
+                    df=dict(zip(bands_names, bands_arr)),
+                    distances=distances,
+                    angles=angles,
+                    bands=self.bands_name,
+                )
                 values.insert(0, plot)
                 values.insert(1, flight_date)
                 values_list.append(values)
@@ -256,13 +312,19 @@ class Pynomicproject:
         features_names.insert(1, "date")
 
         tidf = pd.DataFrame(values_list, columns=features_names)
-        #tidf.id = tidf.id.astype(int)
-        self.ldata = self.ldata.merge(tidf,
-                         on =['id', 'date'])
+        # tidf.id = tidf.id.astype(int)
+        self.ldata = self.ldata.merge(tidf, on=["id", "date"])
         return self.ldata
 
     def Calcualte_green_pixels(
-        self, Red:str, Blue:str, Green:str,image_shape:tuple, min_val= 30, max_val=75, to_data = False
+        self,
+        Red: str,
+        Blue: str,
+        Green: str,
+        image_shape: tuple,
+        min_val=30,
+        max_val=75,
+        to_data=False,
     ):
         """Extracts the green and non-green pixels from each image.
 
@@ -275,51 +337,78 @@ class Pynomicproject:
         Green: str
             name of the column that contains the green band.
         image_shape: tuple
-            (top, bottom, left, right) indicates the area 
+            (top, bottom, left, right) indicates the area
 
         Returns
         -------
             dataframe with the new index.
         """
-        def _calculate_grpx(dicmtx, red:str, green:str, blue:str,min_val:int, max_val:int, im_shp=image_shape):
-            
-            if len(im_shp) < 4 :
+
+        def _calculate_grpx(
+            dicmtx,
+            red: str,
+            green: str,
+            blue: str,
+            min_val: int,
+            max_val: int,
+            im_shp=image_shape,
+        ):
+
+            if len(im_shp) < 4:
                 red1 = dicmtx[red][:]
-                red1 = cv2.normalize(red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
+                red1 = cv2.normalize(
+                    red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
                 green1 = dicmtx[green][:]
-                green1 =cv2.normalize(green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
+                green1 = cv2.normalize(
+                    green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
                 blue1 = dicmtx[blue][:]
-                blue1 = cv2.normalize(blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
+                blue1 = cv2.normalize(
+                    blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
             else:
-                red1 = dicmtx[red][im_shp[0]:im_shp[1],im_shp[2]:im_shp[3]]
-                red1 = cv2.normalize(red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
-                green1 = dicmtx[green][im_shp[0]:im_shp[1],im_shp[2]:im_shp[3]]
-                green1 =cv2.normalize(green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
-                blue1 = dicmtx[blue][im_shp[0]:im_shp[1],im_shp[2]:im_shp[3]]
-                blue1 = cv2.normalize(blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U)
+                red1 = dicmtx[red][
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                ]
+                red1 = cv2.normalize(
+                    red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
+                green1 = dicmtx[green][
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                ]
+                green1 = cv2.normalize(
+                    green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
+                blue1 = dicmtx[blue][
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
+                ]
+                blue1 = cv2.normalize(
+                    blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
+                )
 
             img = np.dstack([red1, green1, blue1])
             hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-            mask = cv2.inRange(hsv, (min_val, 25, 25), (max_val, 255,255))
+            mask = cv2.inRange(hsv, (min_val, 25, 25), (max_val, 255, 255))
 
             unique, counts = np.unique(mask, return_counts=True)
             unique = unique.astype(int).tolist()
             counts = counts.astype(int).tolist()
             ab = dict(zip(unique, counts))
-            if len(unique) > 1 :
+            if len(unique) > 1:
                 val255 = mask == 255
                 val255 = int(val255.sum())
                 val0 = mask == 0
                 val0 = int(mask.sum())
-                por = (val255/(mask.shape[0] * mask.shape[1]))
-                return [np.round(por,2), val255, val0]
+                por = val255 / (mask.shape[0] * mask.shape[1])
+                return [np.round(por, 2), val255, val0]
             else:
-                if 0  in unique : 
+                if 0 in unique:
                     nongr = ab.get(0)
-                    return [0,0, nongr]
-                if 255 in unique: 
+                    return [0, 0, nongr]
+                if 255 in unique:
                     gp = ab.get(255)
-                    return [1,gp, 0]
+                    return [1, gp, 0]
 
         values_list = []
         for flight_date in self.dates:
@@ -327,29 +416,39 @@ class Pynomicproject:
                 bands_names = []
                 bands_arr = []
                 for band in self.bands_name:
-                        bands_names.append(band)
-                        bands_arr.append(
-                            self.raw_data["dates"][flight_date][plot][band][:]
-                        )
-                values = _calculate_grpx(dicmtx =  dict(zip(bands_names, bands_arr)), red = Red,
-                                                        green= Green, blue= Blue, min_val = min_val, max_val= max_val)
+                    bands_names.append(band)
+                    bands_arr.append(
+                        self.raw_data["dates"][flight_date][plot][band][:]
+                    )
+                values = _calculate_grpx(
+                    dicmtx=dict(zip(bands_names, bands_arr)),
+                    red=Red,
+                    green=Green,
+                    blue=Blue,
+                    min_val=min_val,
+                    max_val=max_val,
+                )
                 values.insert(0, plot)
                 values.insert(1, flight_date)
                 values_list.append(values)
 
-        features_names = ["id","date","perc_green","N_green_px","N_non_green_px"]
-
+        features_names = [
+            "id",
+            "date",
+            "perc_green",
+            "N_green_px",
+            "N_non_green_px",
+        ]
 
         tidf = pd.DataFrame(values_list, columns=features_names)
-        #tidf.id = tidf.id.astype(int)
+        # tidf.id = tidf.id.astype(int)
 
         if to_data:
-            self.ldata = self.ldata.merge(tidf,
-                            on =['id', 'date'])
+            self.ldata = self.ldata.merge(tidf, on=["id", "date"])
             return self.ldata
         else:
             return tidf
-        
+
     def generate_unique_feature(
         self, function, features_names: list, to_data=False
     ):
@@ -402,7 +501,7 @@ class Pynomicproject:
             return print("feature_names is not a list")
 
     def get_senescens_predictions(
-        self, band: str, threshold: float, to_data: bool = False, from_day = 0
+        self, band: str, threshold: float, to_data: bool = False, from_day=0
     ):
         """Generates predictions of senecense by providing threshold and index.
 
@@ -420,8 +519,8 @@ class Pynomicproject:
             Dataframe
         """
 
-        def _case_in(plot, col_val, numerical_date_col, threshold ):
-
+        def _case_in(plot, col_val, numerical_date_col, threshold):
+            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
             for plotpos, plotval in enumerate(plot[numerical_date_col].values):
                 if (
                     plot.loc[
@@ -456,19 +555,18 @@ class Pynomicproject:
             return -999
 
         def _case_upper(plot, col_val, numerical_date_col, threshold):
-
+            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
             spl = UnivariateSpline(x, y, k=3, s=4)
-            #xs = np.linspace(x.min(), x.max(), 1000)
+            # xs = np.linspace(x.min(), x.max(), 1000)
 
             def _func(x_val):
                 return spl(x_val) - threshold
 
-            initial_guess = sorted(list(x), reverse=True)[0]
+            initial_guess = x.astype(int).min()
             result = root(_func, initial_guess)
-
 
             if result.success:
                 plotpred = result.x[0]
@@ -478,16 +576,17 @@ class Pynomicproject:
             return round(plotpred)
 
         def _case_lower(plot, col_val, numerical_date_col, threshold):
+            plot = plot.sort_values(numerical_date_col, ascending =True).reset_index()
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
             spl = UnivariateSpline(x, y, k=3, s=4)
-            #xs = np.linspace(x.min(), x.max(), 1000)
+            # xs = np.linspace(x.min(), x.max(), 1000)
 
             def _func(x_val):
                 return spl(x_val) - threshold
-            
-            initial_guess = sorted(list(x), reverse=False)[0]
+
+            initial_guess = x.astype(int).max()
             result = root(_func, initial_guess)
 
             if result.success:
@@ -496,7 +595,7 @@ class Pynomicproject:
                 plotpred = -997
 
             return round(plotpred)
-        
+
         df1 = self.ldata.copy()
         plot_id_col = "id"
         col_val = band
@@ -508,7 +607,7 @@ class Pynomicproject:
         )
         numerical_date_col = "num_day"
 
-        if from_day > 0 :
+        if from_day > 0:
             df1 = df1.loc[df1.num_day > from_day].copy()
 
         for p in df1[plot_id_col].unique():
@@ -556,7 +655,7 @@ class Pynomicproject:
                     ],
                 ],
                 on=["id"],
-                how = 'left'
+                how="left",
             )
         else:
             return df1
@@ -591,7 +690,7 @@ class Pynomicproject:
 
             out_store = zarr.DirectoryStore(path)
             zarr.copy_store(self.raw_data.store, out_store)
-            
+
             return
 
         else:
@@ -632,342 +731,365 @@ class Pynomicproject:
                     bands_names.append(band)
                     bands_arr.append(self.raw_data["dates"][d][p][band][:])
                 arrays = fun(dict(zip(bands_names, bands_arr)))
-                name = str(self.ldata.loc[
-                    self.ldata["id"] == int(p), identification_col
-                ].unique()[0])
+                name = str(
+                    self.ldata.loc[
+                        self.ldata["id"] == int(p), identification_col
+                    ].unique()[0]
+                )
                 image_path = os.path.join(path, name + ".tiff")
                 image = Image.fromarray(arrays)
                 image.save(image_path)
 
-
     def get_senescens_Splines_predictions(
-            self, band: str, threshold: float, to_data: bool = False, from_day = 0
-        ):
-            """Generates predictions of senecense by providing threshold and index.
+        self, band: str, threshold: float, to_data: bool = False, from_day=0
+    ):
+        """Generates predictions of senecense by providing threshold and index.
 
-            Parameters
-            ----------
-            band:str
-                Band name to be used in the prediciton.
-            threshold:float
-                value to determen if a plot is dry or not.
-            to_data:bool
-                boolean value to save or not the predictions.
+        Parameters
+        ----------
+        band:str
+            Band name to be used in the prediciton.
+        threshold:float
+            value to determen if a plot is dry or not.
+        to_data:bool
+            boolean value to save or not the predictions.
 
-            Returns
-            -------
-                Dataframe
-            """
+        Returns
+        -------
+            Dataframe
+        """
 
-            def _case_in(plot, col_val, numerical_date_col, threshold ):
+        def _case_in(plot, col_val, numerical_date_col, threshold):
 
-                x = plot[numerical_date_col].values
-                y = plot[col_val].values
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
 
-                spl = UnivariateSpline(x, y, k=3, s=4)
-                #xs = np.linspace(x.min(), x.max(), 1000)
+            spl = UnivariateSpline(x, y, k=3, s=4)
+            # xs = np.linspace(x.min(), x.max(), 1000)
 
-                def _func(x_val):
-                    return spl(x_val) - threshold
-                
-                 ### INITIAL GUESS ESTIMATOR ####
-                def _inestim(plot, col_val, numerical_date_col, threshold ):
+            def _func(x_val):
+                return spl(x_val) - threshold
 
-                    for plotpos, plotval in enumerate(plot[numerical_date_col].values):
+            ### INITIAL GUESS ESTIMATOR ####
+            def _inestim(plot, col_val, numerical_date_col, threshold):
+
+                for plotpos, plotval in enumerate(
+                    plot[numerical_date_col].values
+                ):
+                    if (
+                        plot.loc[
+                            plot[numerical_date_col] == plotval, col_val
+                        ].values[0]
+                        <= threshold
+                    ) & (plotpos != 0):
+
                         if (
                             plot.loc[
                                 plot[numerical_date_col] == plotval, col_val
                             ].values[0]
-                            <= threshold
-                        ) & (plotpos != 0):
+                            == threshold
+                        ):
+                            return round(plotval)
+                        else:
+                            ant_date = plot[numerical_date_col].values[
+                                plotpos - 1
+                            ]
+                            colant_val = plot.loc[
+                                plot[numerical_date_col] == ant_date, col_val
+                            ].values[0]
+                            col_value = plot.loc[
+                                plot[numerical_date_col] == plotval, col_val
+                            ].values[0]
+                            yval = np.array([ant_date, plotval]).reshape(-1, 1)
+                            xval = np.array([colant_val, col_value]).reshape(
+                                -1, 1
+                            )
+                            lm = LinearRegression().fit(xval, yval)
+                            plotpred = lm.predict(
+                                np.array([threshold]).reshape(-1, 1)
+                            )[0][0]
 
-                            if (
-                                plot.loc[
-                                    plot[numerical_date_col] == plotval, col_val
-                                ].values[0]
-                                == threshold
-                            ):
-                                return round(plotval)
-                            else:
-                                ant_date = plot[numerical_date_col].values[plotpos - 1]
-                                colant_val = plot.loc[
-                                    plot[numerical_date_col] == ant_date, col_val
-                                ].values[0]
-                                col_value = plot.loc[
-                                    plot[numerical_date_col] == plotval, col_val
-                                ].values[0]
-                                yval = np.array([ant_date, plotval]).reshape(-1, 1)
-                                xval = np.array([colant_val, col_value]).reshape(-1, 1)
-                                lm = LinearRegression().fit(xval, yval)
-                                plotpred = lm.predict(
-                                    np.array([threshold]).reshape(-1, 1)
-                                )[0][0]
+                            return round(plotpred)
+                return -900
 
-                                return round(plotpred)
-                    return -900
-
-                initial_guess = _inestim(plot= plot, col_val=col_val,
-                                        numerical_date_col=numerical_date_col,threshold=threshold)
-
-                result = root(_func, initial_guess)
-
-                if result.success:
-                    plotpred = result.x[0]
-                else:
-                    plotpred = 0
-
-                return round(plotpred)
-
-            def _case_upper(plot, col_val, numerical_date_col, threshold):
-
-                x = plot[numerical_date_col].values
-                y = plot[col_val].values
-
-                spl = UnivariateSpline(x, y, k=3, s=4)
-                #xs = np.linspace(x.min(), x.max(), 1000)
-
-                def _func(x_val):
-                    return spl(x_val) - threshold
-                
-                initial_guess = np.sort(plot[numerical_date_col].values)[len(plot[col_val])-1]
-                result = root(_func, initial_guess)
-
-
-                if result.success:
-                    plotpred = result.x[0]
-                else:
-                    plotpred = 0
-
-                return round(plotpred)
-
-            def _case_lower(plot, col_val, numerical_date_col, threshold):
-                x = plot[numerical_date_col].values
-                y = plot[col_val].values
-
-                spl = UnivariateSpline(x, y, k=3, s=4)
-                #xs = np.linspace(x.min(), x.max(), 1000)
-
-                def _func(x_val):
-                    return spl(x_val) - threshold
-                
-                initial_guess = np.sort(plot[numerical_date_col].values)[len(plot[col_val])-1]
-                result = root(_func, initial_guess)
-
-                if result.success:
-                    plotpred = result.x[0]
-                else:
-                    plotpred = 0
-
-                return round(plotpred)
-            
-            df1 = self.ldata.copy()
-            plot_id_col = "id"
-            col_val = band
-            df1["num_day"] = (
-                pd.to_datetime(df1.date) - pd.to_datetime(df1.date).min()
+            initial_guess = _inestim(
+                plot=plot,
+                col_val=col_val,
+                numerical_date_col=numerical_date_col,
+                threshold=threshold,
             )
-            df1["num_day"] = (
-                df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
-            )
-            numerical_date_col = "num_day"
 
-            if from_day > 0 :
-                df1 = df1.loc[df1.num_day > from_day].copy()
+            result = root(_func, initial_guess)
 
-            for p in df1[plot_id_col].unique():
-
-                plot = df1.loc[df1[plot_id_col] == p]
-
-                # First case if threshold is in rage
-                if (plot[col_val].min() <= threshold) & (
-                    plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
-                    >= threshold
-                ):
-                    df1.loc[df1[plot_id_col] == p, "dpred"] = _case_in(
-                        plot, col_val, numerical_date_col, threshold
-                    )
-                    df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
-
-                # Second case if threshold is upper than the range in col_val
-                elif (
-                    plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
-                    < threshold
-                ):
-                    print(f"Plot Id: {p} range is lower than threshold ")
-                    df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
-                        plot, col_val, numerical_date_col, threshold
-                    )
-                    df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
-
-                # Third case if threshold is lower than the range in col_val
-                elif plot[col_val].min() >= threshold:
-                    print(f"Plot Id: {p} range is Higher than threshold ")
-                    df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
-                        plot, col_val, numerical_date_col, threshold
-                    )
-                    df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
-
-            if to_data:
-                self.ldata = self.ldata.merge(
-                    df1.loc[
-                        :,
-                        [
-                            "id",
-                            numerical_date_col,
-                            "dpred",
-                            "in_range",
-                        ],
-                    ],
-                    on=["id"],
-                    how = 'left'
-                )
+            if result.success:
+                plotpred = result.x[0]
             else:
-                return df1
-            
+                plotpred = 0
+
+            return round(plotpred)
+
+        def _case_upper(plot, col_val, numerical_date_col, threshold):
+
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
+
+            spl = UnivariateSpline(x, y, k=3, s=4)
+            # xs = np.linspace(x.min(), x.max(), 1000)
+
+            def _func(x_val):
+                return spl(x_val) - threshold
+
+            initial_guess = np.sort(plot[numerical_date_col].values)[
+                len(plot[col_val]) - 1
+            ]
+            result = root(_func, initial_guess)
+
+            if result.success:
+                plotpred = result.x[0]
+            else:
+                plotpred = 0
+
+            return round(plotpred)
+
+        def _case_lower(plot, col_val, numerical_date_col, threshold):
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
+
+            spl = UnivariateSpline(x, y, k=3, s=4)
+            # xs = np.linspace(x.min(), x.max(), 1000)
+
+            def _func(x_val):
+                return spl(x_val) - threshold
+
+            initial_guess = np.sort(plot[numerical_date_col].values)[
+                len(plot[col_val]) - 1
+            ]
+            result = root(_func, initial_guess)
+
+            if result.success:
+                plotpred = result.x[0]
+            else:
+                plotpred = 0
+
+            return round(plotpred)
+
+        df1 = self.ldata.copy()
+        plot_id_col = "id"
+        col_val = band
+        df1["num_day"] = (
+            pd.to_datetime(df1.date) - pd.to_datetime(df1.date).min()
+        )
+        df1["num_day"] = (
+            df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
+        )
+        numerical_date_col = "num_day"
+
+        if from_day > 0:
+            df1 = df1.loc[df1.num_day > from_day].copy()
+
+        for p in df1[plot_id_col].unique():
+
+            plot = df1.loc[df1[plot_id_col] == p]
+
+            # First case if threshold is in rage
+            if (plot[col_val].min() <= threshold) & (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                >= threshold
+            ):
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_in(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
+
+            # Second case if threshold is upper than the range in col_val
+            elif (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                < threshold
+            ):
+                print(f"Plot Id: {p} range is lower than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
+
+            # Third case if threshold is lower than the range in col_val
+            elif plot[col_val].min() >= threshold:
+                print(f"Plot Id: {p} range is Higher than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
+
+        if to_data:
+            self.ldata = self.ldata.merge(
+                df1.loc[
+                    :,
+                    [
+                        "id",
+                        numerical_date_col,
+                        "dpred",
+                        "in_range",
+                    ],
+                ],
+                on=["id"],
+                how="left",
+            )
+        else:
+            return df1
 
     def get_senescens_Lowess_predictions(
-                self, band: str, threshold: float, frac_val = 0.5, to_data: bool = False, from_day = 0
+        self,
+        band: str,
+        threshold: float,
+        frac_val=0.5,
+        to_data: bool = False,
+        from_day=0,
+    ):
+        """Generates predictions of senecense by providing threshold and index.
+
+        Parameters
+        ----------
+        band:str
+            Band name to be used in the prediciton.
+        threshold:float
+            value to determen if a plot is dry or not.
+        to_data:bool
+            boolean value to save or not the predictions.
+
+        Returns
+        -------
+            Dataframe
+        """
+
+        def _case_in(
+            plot, col_val, numerical_date_col, threshold, frac_val=frac_val
+        ):
+
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
+
+            lowess_result = lowess(y, x, frac=frac_val)
+
+            # Extract smoothed x and y
+            x_smooth = lowess_result[:, 0]
+            y_smooth = lowess_result[:, 1]
+
+            # interpolation functions for prediction
+            lowess_predict_x_from_y = interp1d(
+                y_smooth, x_smooth, kind="linear", fill_value="extrapolate"
+            )
+
+            y_target = threshold
+            x_for_y = lowess_predict_x_from_y(y_target)
+
+            return int(np.round(x_for_y))
+
+        def _case_upper(
+            plot, col_val, numerical_date_col, threshold, frac_val=frac_val
+        ):
+
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
+
+            lowess_result = lowess(y, x, frac=frac_val)
+
+            # Extract smoothed x and y
+            x_smooth = lowess_result[:, 0]
+            y_smooth = lowess_result[:, 1]
+
+            # interpolation functions for prediction
+            lowess_predict_x_from_y = interp1d(
+                y_smooth, x_smooth, kind="linear", fill_value="extrapolate"
+            )
+
+            y_target = threshold
+            x_for_y = lowess_predict_x_from_y(y_target)
+
+            return int(np.round(x_for_y))
+
+        def _case_lower(
+            plot, col_val, numerical_date_col, threshold, frac_val=frac_val
+        ):
+
+            x = plot[numerical_date_col].values
+            y = plot[col_val].values
+
+            lowess_result = lowess(y, x, frac=frac_val)
+
+            # Extract smoothed x and y
+            x_smooth = lowess_result[:, 0]
+            y_smooth = lowess_result[:, 1]
+
+            # interpolation functions for prediction
+            lowess_predict_x_from_y = interp1d(
+                y_smooth, x_smooth, kind="linear", fill_value="extrapolate"
+            )
+
+            y_target = threshold
+            x_for_y = lowess_predict_x_from_y(y_target)
+
+            return int(np.round(x_for_y))
+
+        df1 = self.ldata.copy()
+        plot_id_col = "id"
+        col_val = band
+        df1["num_day"] = (
+            pd.to_datetime(df1.date) - pd.to_datetime(df1.date).min()
+        )
+        df1["num_day"] = (
+            df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
+        )
+        numerical_date_col = "num_day"
+
+        if from_day > 0:
+            df1 = df1.loc[df1.num_day > from_day].copy()
+
+        for p in df1[plot_id_col].unique():
+
+            plot = df1.loc[df1[plot_id_col] == p]
+
+            # First case if threshold is in rage
+            if (plot[col_val].min() <= threshold) & (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                >= threshold
             ):
-                """Generates predictions of senecense by providing threshold and index.
-
-                Parameters
-                ----------
-                band:str
-                    Band name to be used in the prediciton.
-                threshold:float
-                    value to determen if a plot is dry or not.
-                to_data:bool
-                    boolean value to save or not the predictions.
-
-                Returns
-                -------
-                    Dataframe
-                """
-
-                def _case_in(plot, col_val, numerical_date_col,
-                            threshold, frac_val = frac_val ):
-
-                    x = plot[numerical_date_col].values
-                    y = plot[col_val].values
-
-                    lowess_result = lowess(y, x, frac=frac_val)
-
-                    #Extract smoothed x and y
-                    x_smooth = lowess_result[:, 0]
-                    y_smooth = lowess_result[:, 1]
-
-                    #interpolation functions for prediction
-                    lowess_predict_x_from_y = interp1d(y_smooth, x_smooth,
-                                                    kind='linear', fill_value="extrapolate")
-
-                    y_target = threshold
-                    x_for_y = lowess_predict_x_from_y(y_target)
-
-                    return int(np.round(x_for_y))
-                    
-
-                def _case_upper(plot, col_val, numerical_date_col,
-                                threshold, frac_val = frac_val):
-
-                    x = plot[numerical_date_col].values
-                    y = plot[col_val].values
-
-                    lowess_result = lowess(y, x, frac=frac_val)
-
-                    #Extract smoothed x and y
-                    x_smooth = lowess_result[:, 0]
-                    y_smooth = lowess_result[:, 1]
-
-                    #interpolation functions for prediction
-                    lowess_predict_x_from_y = interp1d(y_smooth, x_smooth, kind='linear',
-                                                        fill_value="extrapolate")
-
-                    y_target = threshold
-                    x_for_y = lowess_predict_x_from_y(y_target)
-
-                    return int(np.round(x_for_y))
-
-                def _case_lower(plot, col_val, numerical_date_col,
-                                threshold, frac_val = frac_val):
-
-                    x = plot[numerical_date_col].values
-                    y = plot[col_val].values
-
-                    lowess_result = lowess(y, x, frac=frac_val)
-
-                    #Extract smoothed x and y
-                    x_smooth = lowess_result[:, 0]
-                    y_smooth = lowess_result[:, 1]
-
-                    #interpolation functions for prediction
-                    lowess_predict_x_from_y = interp1d(y_smooth, x_smooth,
-                                                    kind='linear', fill_value="extrapolate")
-
-                    y_target = threshold
-                    x_for_y = lowess_predict_x_from_y(y_target)
-
-                    return int(np.round(x_for_y))
-                
-                df1 = self.ldata.copy()
-                plot_id_col = "id"
-                col_val = band
-                df1["num_day"] = (
-                    pd.to_datetime(df1.date) - pd.to_datetime(df1.date).min()
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_in(
+                    plot, col_val, numerical_date_col, threshold
                 )
-                df1["num_day"] = (
-                    df1["num_day"].astype(str).apply(lambda x: int(x.split(" ")[0]))
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
+
+            # Second case if threshold is upper than the range in col_val
+            elif (
+                plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
+                < threshold
+            ):
+                print(f"Plot Id: {p} range is lower than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
+                    plot, col_val, numerical_date_col, threshold
                 )
-                numerical_date_col = "num_day"
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
 
-                if from_day > 0 :
-                    df1 = df1.loc[df1.num_day > from_day].copy()
+            # Third case if threshold is lower than the range in col_val
+            elif plot[col_val].min() >= threshold:
+                print(f"Plot Id: {p} range is Higher than threshold ")
+                df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
+                    plot, col_val, numerical_date_col, threshold
+                )
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
 
-                for p in df1[plot_id_col].unique():
-
-                    plot = df1.loc[df1[plot_id_col] == p]
-
-                    # First case if threshold is in rage
-                    if (plot[col_val].min() <= threshold) & (
-                        plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
-                        >= threshold
-                    ):
-                        df1.loc[df1[plot_id_col] == p, "dpred"] = _case_in(
-                            plot, col_val, numerical_date_col, threshold
-                        )
-                        df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
-
-                    # Second case if threshold is upper than the range in col_val
-                    elif (
-                        plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
-                        < threshold
-                    ):
-                        print(f"Plot Id: {p} range is lower than threshold ")
-                        df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
-                            plot, col_val, numerical_date_col, threshold
-                        )
-                        df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
-
-                    # Third case if threshold is lower than the range in col_val
-                    elif plot[col_val].min() >= threshold:
-                        print(f"Plot Id: {p} range is Higher than threshold ")
-                        df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
-                            plot, col_val, numerical_date_col, threshold
-                        )
-                        df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
-
-                if to_data:
-                    self.ldata = self.ldata.merge(
-                        df1.loc[
-                            :,
-                            [
-                                "id",
-                                numerical_date_col,
-                                "dpred",
-                                "in_range",
-                            ],
-                        ],
-                        on=["id"],
-                        how = 'left'
-                    )
-                else:
-                    return df1
+        if to_data:
+            self.ldata = self.ldata.merge(
+                df1.loc[
+                    :,
+                    [
+                        "id",
+                        numerical_date_col,
+                        "dpred",
+                        "in_range",
+                    ],
+                ],
+                on=["id"],
+                how="left",
+            )
+        else:
+            return df1

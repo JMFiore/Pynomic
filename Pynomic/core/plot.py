@@ -22,6 +22,7 @@ import numpy as np
 # CLASSES
 # =============================================================================
 
+
 @attr.s(repr=False)
 class Pynomicplotter:
     """class for ploting the data in Pynomicproject."""
@@ -72,9 +73,9 @@ class Pynomicplotter:
             plot["date"] = pd.to_datetime(plot["date"]).dt.date
             xlab = "Flight dates"
             rot = 90
-        
-        plot = plot.sort_values('date').reset_index()
-        plot.set_index('date', inplace=True)
+
+        plot = plot.sort_values("date").reset_index()
+        plot.set_index("date", inplace=True)
         if ax is None:
             ax = plt.axes()
 
@@ -178,7 +179,7 @@ class Pynomicplotter:
             xlab = "Flight dates"
             rot = 90
 
-        plot = plot.sort_values('date').reset_index()
+        plot = plot.sort_values("date").reset_index()
         axbig = fig.add_subplot(gs[1, :])
         axbig = plt.gca() if axbig is None else axbig
         axbig.plot(plot.date, plot[band_name], **kwargs)
@@ -189,7 +190,7 @@ class Pynomicplotter:
         axbig.grid(True)
 
         return ax1, axbig
-    
+
     def RGB_image_timeline(
         self,
         band_name,
@@ -230,6 +231,7 @@ class Pynomicplotter:
         -------
             plot and axis
         """
+
         def _rgb_view(df, red1, blue1, green1, size: tuple):
 
             if len(size) > 0:
@@ -240,36 +242,36 @@ class Pynomicplotter:
                 right = size[3]
 
                 red = df[red1][up:down, left:right]
-                if (red.dtype == 'float64') or ((red.dtype == 'float32')):
-                    red *= (255.0/red.max())
+                if (red.dtype == "float64") or ((red.dtype == "float32")):
+                    red *= 255.0 / red.max()
                     red = np.uint8(red.astype(int))
                 blue = df[blue1][up:down, left:right]
-                if (blue.dtype == 'float64') or ((blue.dtype == 'float32')):
-                    blue *= (255.0/blue.max())
+                if (blue.dtype == "float64") or ((blue.dtype == "float32")):
+                    blue *= 255.0 / blue.max()
                     blue = np.uint8(blue.astype(int))
                 green = df[green1][up:down, left:right]
-                if (green.dtype == 'float64') or ((green.dtype == 'float32')):
-                    green *= (255.0/green.max())
+                if (green.dtype == "float64") or ((green.dtype == "float32")):
+                    green *= 255.0 / green.max()
                     green = np.uint8(green.astype(int))
-            
+
             else:
                 red = df[red1][:]
-                if (red.dtype == 'float64') or ((red.dtype == 'float32')):
-                    red *= (255.0/red.max())
+                if (red.dtype == "float64") or ((red.dtype == "float32")):
+                    red *= 255.0 / red.max()
                     red = np.uint8(red.astype(int))
                 blue = df[blue1][:]
-                if (blue.dtype == 'float64') or ((blue.dtype == 'float32')):
-                    blue *= (255.0/blue.max())
+                if (blue.dtype == "float64") or ((blue.dtype == "float32")):
+                    blue *= 255.0 / blue.max()
                     blue = np.uint8(blue.astype(int))
                 green = df[green1][:]
-                if (green.dtype == 'float64') or ((green.dtype == 'float32')):
-                    green *= (255.0/green.max())
+                if (green.dtype == "float64") or ((green.dtype == "float32")):
+                    green *= 255.0 / green.max()
                     green = np.uint8(green.astype(int))
 
             image = np.dstack([red, green, blue])
 
             return image
-        
+
         def _get_arrays(self, n_id, function):
             imlist = []
             dates = pd.DataFrame(self.ldata.date.unique(), columns=["date"])
@@ -283,9 +285,15 @@ class Pynomicplotter:
                     bands_arr.append(
                         self.raw_data["dates"][dat][n_id][band][:]
                     )
-                imlist.append(function(dict(zip(bands_names, bands_arr)),
-                            red1=Red, green1=Green, blue1=Blue,
-                            size=Size))
+                imlist.append(
+                    function(
+                        dict(zip(bands_names, bands_arr)),
+                        red1=Red,
+                        green1=Green,
+                        blue1=Blue,
+                        size=Size,
+                    )
+                )
             return imlist
 
         array_list = _get_arrays(self._summary, n_id=n_id, function=_rgb_view)
@@ -333,7 +341,7 @@ class Pynomicplotter:
             xlab = "Flight dates"
             rot = 90
 
-        plot = plot.sort_values('date').reset_index()
+        plot = plot.sort_values("date").reset_index()
         axbig = fig.add_subplot(gs[1, :])
         axbig = plt.gca() if axbig is None else axbig
         axbig.plot(plot.date, plot[band_name], **kwargs)

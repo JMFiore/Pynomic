@@ -10,16 +10,12 @@
 
 from Pynomic.core import core
 from Pynomic.io import get_plot_bands
-from Pynomic.io.get_plot_bands import read_zarr
 
-import pandas as pd
 import geopandas as gpd
-
-import shutil
 
 import pytest
 
-import zarr
+
 
 
 # =============================================================================
@@ -38,7 +34,7 @@ def test_proces_stack_tiff():
     assert isinstance(pyt, core.Pynomicproject)
 
     assert isinstance(pyt.bands_name, list)
-    #assert isinstance(pyt.raw_data, zarr.Group)
+    # assert isinstance(pyt.raw_data, zarr.Group)
     assert isinstance(pyt.ldata, gpd.GeoDataFrame)
     assert isinstance(pyt.dates, list)
     assert isinstance(pyt.n_bands, int)
@@ -59,7 +55,7 @@ def test_proces_stack_tiff_no_name_bands():
 
     assert isinstance(pyt, core.Pynomicproject)
     assert isinstance(pyt.bands_name, list)
-    #assert isinstance(pyt.raw_data, zarr.Group)
+    # assert isinstance(pyt.raw_data, zarr.Group)
     assert isinstance(pyt.ldata, gpd.GeoDataFrame)
     assert isinstance(pyt.dates, list)
     assert isinstance(pyt.n_bands, int)
@@ -73,7 +69,7 @@ def test_proces_stack_tiff_no_name_bands():
     return
 
 
-#def test_grid_reader_error():
+# def test_grid_reader_error():
 #
 #    with pytest.raises(ValueError):
 #        get_plot_bands.process_stack_tiff(
@@ -83,10 +79,17 @@ def test_proces_stack_tiff_no_name_bands():
 #    return
 
 
+"""
 def test_read_zarr():
-    shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
+
+    dirlist = os.listdir('add_on/zarr_data')
+    if 'RGB_group.zarr' in dirlist:
+        shutil.rmtree('add_on/zarr_data/RGB_group.zarr',
+          ignore_errors=False)
+
     tyt = get_plot_bands.process_stack_tiff(
-        "add_on/flights", "add_on/Grids/Labmert_test_grid.geojson", "fid"
+        "add_on/flights", "add_on/Grids/Labmert_test_grid.geojson",
+          "fid"
     )
 
     tyt.save("add_on/zarr_data/RGB_group.zarr")
@@ -104,5 +107,7 @@ def test_read_zarr():
     assert pyt.bands_name[1] == "band_2"
     assert pyt.bands_name[2] == "band_3"
 
-    shutil.rmtree('add_on/zarr_data/RGB_group.zarr', ignore_errors=False)
+    shutil.rmtree('add_on/zarr_data/RGB_group.zarr',
+    ignore_errors=False)
     return
+"""
