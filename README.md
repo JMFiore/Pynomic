@@ -10,5 +10,6 @@ through time, estimate the date of a event given a certain threshold, automatica
 You need Python 3.9+ to run Pynomic
 
 ## Developer Installation 
-Clone this repo. Move to the file and execute:
-  $ pip install e .
+Clone this repo. Move to the file and execute
+
+      $ pip install e .
