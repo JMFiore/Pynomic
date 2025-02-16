@@ -698,7 +698,7 @@ class Pynomicproject:
 
         return
 
-    def save_plots_as_tiff(self, folder_path, fun, identification_col):
+    def save_indiv_plots_images(self, folder_path, fun, identification_col, file_type:str):
         """Creates as many folders as dates in path provided and saves the plot images.
 
         Parameters
@@ -709,7 +709,8 @@ class Pynomicproject:
             function to use to stack the bands.
         identification_col:str
             Column of ldata where the ids are.
-
+        file_type:str
+            tiff or jpg
         Returns
         -------
             folder with images.
@@ -726,12 +727,17 @@ class Pynomicproject:
                 arrays = fun(dict(zip(bands_names, bands_arr)))
                 name = str(
                     self.ldata.loc[
-                        self.ldata["id"] == int(p), identification_col
+                        self.ldata["id"] == p, identification_col
                     ].unique()[0]
                 )
-                image_path = os.path.join(path, name + ".tiff")
+                if file_type  == 'tiff':
+                    image_path = os.path.join(path, name + ".tiff")
+                if file_type == 'jpg':
+                    image_path = os.path.join(path, name + ".jpg")
                 image = Image.fromarray(arrays)
                 image.save(image_path)
+
+    
 
     def get_senescens_Splines_predictions(
         self, band: str, threshold: float, to_data: bool = False, from_day=0

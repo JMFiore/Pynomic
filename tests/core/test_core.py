@@ -426,3 +426,66 @@ def test_senescence_prediction_loess():
     assert int(df1.loc[df1.id == "A2", "dpred"].values[0]) == 44
 
     return
+
+
+def test_save_plots_fun():
+    pyt = get_plot_bands.process_stack_tiff(
+        "add_on/flights",
+        "add_on/Grids/Labmert_test_small.geojson",
+        "fid",
+        ["red", "green", "blue"],
+    )
+
+    dirlist = os.listdir("add_on/zarr_data")
+    if "imgs" in dirlist:
+        shutil.rmtree("add_on/zarr_data/imgs", ignore_errors=False)
+
+    if "tiffs" in dirlist:
+        shutil.rmtree("add_on/zarr_data/tiffs", ignore_errors=False)
+
+    os.mkdir("add_on/zarr_data/imgs")
+    os.mkdir("add_on/zarr_data/tiffs")
+
+    def rgb_fun(df):
+
+        red = df["red"][:]
+        green = df["green"][:]
+        blue = df["blue"][:]
+
+        return np.dstack([red, green, blue])
+
+    pyt.save_indiv_plots_images(
+        "add_on/zarr_data/imgs",
+        fun=rgb_fun,
+        identification_col="id",
+        file_type="jpg",
+    )
+
+    imgslist = os.listdir("add_on/zarr_data/imgs")
+
+    assert len(imgslist) == len(pyt.dates)
+    for f in imgslist:
+        pth = "add_on/zarr_data/imgs" + "/" + f
+        assert len(os.listdir(pth)) == 4
+        assert "A1.jpg" in os.listdir(pth)
+        assert "A3.jpg" in os.listdir(pth)
+
+    shutil.rmtree("add_on/zarr_data/imgs", ignore_errors=False)
+
+    pyt.save_indiv_plots_images(
+        "add_on/zarr_data/tiffs",
+        fun=rgb_fun,
+        identification_col="id",
+        file_type="tiff",
+    )
+
+    assert len(imgslist) == len(pyt.dates)
+    for f in imgslist:
+        pth = "add_on/zarr_data/tiffs" + "/" + f
+        assert len(os.listdir(pth)) == 4
+        assert "A1.tiff" in os.listdir(pth)
+        assert "A3.tiff" in os.listdir(pth)
+
+    shutil.rmtree("add_on/zarr_data/tiffs", ignore_errors=False)
+
+    return
