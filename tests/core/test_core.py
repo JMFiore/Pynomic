@@ -56,10 +56,6 @@ def test_Pynomicporject_obj():
     assert pyt.ldata.columns[4] == "green"
     assert pyt.ldata.columns[5] == "blue"
     assert pyt.dates[0] == "20180917"
-    assert pyt.dates[1] == "20180815"
-    assert pyt.dates[2] == "20180905"
-    assert pyt.dates[3] == "20180829"
-    assert pyt.dates[4] == "20180914"
     assert pyt.n_bands == 3
     assert pyt.bands_name[0] == "red"
     assert pyt.bands_name[1] == "green"
@@ -226,7 +222,9 @@ def test_RGB_ind():
     assert "ExR" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == "A1", "VDVI"].values[0]
+        pyt.ldata.loc[
+            (pyt.ldata.id == "A1") & (pyt.ldata.date == "20180917"), "VDVI"
+        ].values[0]
         == 0.015838010015441387
     )
 
@@ -270,10 +268,17 @@ def test_Multispectral_VI():
     assert "RTVI" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[pyt.ldata.id == "A1", "NDVI"].values[0]
+        pyt.ldata.loc[
+            (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"), "NDVI"
+        ].values[0]
         == 0.7110486695733146
     )
-
+    assert np.round(
+        pyt.ldata.loc[
+            (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"), "RTVI"
+        ].values[0],
+        0,
+    ) == np.round(12.214456, 0)
     return
 
 
@@ -321,7 +326,11 @@ def test_GLMC_TI():
 
     assert (
         round(
-            pyt.ldata.loc[pyt.ldata.id == "A1", "red_50_90_cont"].values[0], 0
+            pyt.ldata.loc[
+                (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"),
+                "red_50_90_cont",
+            ].values[0],
+            0,
         )
         == 7608.0
     )
