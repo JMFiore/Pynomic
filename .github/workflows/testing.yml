@@ -43,6 +43,10 @@ jobs:
 
       - name: Install tox
         run: pip install tox
+        run: pip install pytest pytest-cov
 
       - name: tox -re ${{ matrix.tox_env }}
         run: tox -re ${{ matrix.tox_env }}
+        
+      - name: Test and Coverage
+        run: python -m pytest --cov --cov-report json
