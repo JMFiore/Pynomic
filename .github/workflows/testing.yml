@@ -42,12 +42,8 @@ jobs:
           python-version: ${{ steps.pyversion.outputs.result || env.default-python }}
 
       - name: Install tox
-        run: |
-          pip install tox
-          pip install pytest pytest-cov
+        run: pip install tox
+
 
       - name: tox -re ${{ matrix.tox_env }}
         run: tox -re ${{ matrix.tox_env }}
-        
-      - name: Test and Coverage
-        run: python -m pytest --cov --cov-report json
