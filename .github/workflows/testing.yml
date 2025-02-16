@@ -42,8 +42,9 @@ jobs:
           python-version: ${{ steps.pyversion.outputs.result || env.default-python }}
 
       - name: Install tox
-        run: pip install tox
-        run: pip install pytest pytest-cov
+        run: |
+          pip install tox
+          pip install pytest pytest-cov
 
       - name: tox -re ${{ matrix.tox_env }}
         run: tox -re ${{ matrix.tox_env }}
