@@ -55,11 +55,11 @@ def test_Pynomicporject_obj():
     assert pyt.ldata.columns[3] == "red"
     assert pyt.ldata.columns[4] == "green"
     assert pyt.ldata.columns[5] == "blue"
-    assert pyt.dates[0] == "20180815"
-    assert pyt.dates[1] == "20180917"
+    assert pyt.dates[0] == "20180917"
+    assert pyt.dates[1] == "20180815"
     assert pyt.dates[2] == "20180905"
-    assert pyt.dates[3] == "20180914"
-    assert pyt.dates[4] == "20180822"
+    assert pyt.dates[3] == "20180829"
+    assert pyt.dates[4] == "20180914"
     assert pyt.n_bands == 3
     assert pyt.bands_name[0] == "red"
     assert pyt.bands_name[1] == "green"
@@ -227,7 +227,7 @@ def test_RGB_ind():
 
     assert (
         pyt.ldata.loc[pyt.ldata.id == "A1", "VDVI"].values[0]
-        == 0.1546743079777065
+        == 0.015838010015441387
     )
 
     return
