@@ -1,0 +1,6 @@
+Contents
+--------
+
+
+.. automodule:: Pynomic
+   :members:

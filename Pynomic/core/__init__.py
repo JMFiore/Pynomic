@@ -12,12 +12,7 @@
 # =============================================================================
 
 from .core import Pynomicproject
-from ..io.get_plot_bands import process_stack_tiff, auto_fit_image, read_zarr
+from .plot import Pynomicplotter
 
 
-__all__ = [
-    "Pynomicproject",
-    "process_stack_tiff",
-    "auto_fit_image",
-    "read_zarr",
-]
+__all__ = ["Pynomicproject", "Pynomicplotter"]

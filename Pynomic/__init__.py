@@ -9,9 +9,7 @@
 # =============================================================================
 
 """
-Pynomic.
-
-Implementation drone images analisys.
+Pynomic library.
 """
 
 # =============================================================================
@@ -25,10 +23,10 @@ __version__ = "0.0.1"
 # IMPORTS
 # =============================================================================
 
-from .core import Pynomicproject
-from .io.get_plot_bands import process_stack_tiff
-from .io.get_plot_bands import auto_fit_image
+from .core.core import Pynomicproject
+from .core.plot import Pynomicplotter
 from .io.get_plot_bands import read_zarr
+from .io.get_plot_bands import process_stack_tiff
 
-__all__ = ["Pynomicproject", "process_stack_tiff",
-           "auto_fit_image", "read_zarr"]
+__all__ = ["Pynomicplotter", "Pynomicproject",
+           "read_zarr", "process_stack_tiff"]

@@ -635,7 +635,7 @@ class Pynomicproject:
                 plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
                 < threshold
             ):
-                print(f"Plot Id: {p} range is lower than threshold ")
+                print(f"Plot Id: {p} threshold is upper than range")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
                     plot, col_val, numerical_date_col, threshold
                 )
@@ -643,7 +643,7 @@ class Pynomicproject:
 
             # Third case if threshold is lower than the range in col_val
             elif plot[col_val].min() >= threshold:
-                print(f"Plot Id: {p} range is Higher than threshold ")
+                print(f"Plot Id: {p} threshold is lower than range")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
                     plot, col_val, numerical_date_col, threshold
                 )
