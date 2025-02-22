@@ -1,11 +1,12 @@
 include LICENSE
 include README.md
+include pyproject.toml
 
 recursive-include Pynomic *.py
 
 exclude tox.ini
-exclude pyproject.toml
 exclude .header-template
 
+recursive-exclude docs *
 recursive-exclude tests *
 recursive-exclude add_on *
