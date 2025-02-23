@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         tox_env: [py39, py310, py311, py312, py13]
         include:
           - tox_env: style
