@@ -88,7 +88,7 @@ class Pynomicproject:
 
         Returns
         -------
-            Vegetation index in the ldata object.
+            geodataframe
         """
         df = self.ldata
         red = df.loc[:, Red]
@@ -129,14 +129,14 @@ class Pynomicproject:
             name of the column that contains the blue band.
         Green: str
             name of the column that contains the green band.
-        Red edge: str
+        Red_edge: str
             name of the column that contains the Red edge band.
         NIR: str
             name of the column that contains thee NIR band.
 
         Returns
         -------
-            Vegetation index in the ldata object.
+            geodataframe
         """
         df = self.ldata
         red = df.loc[:, Red]
@@ -205,7 +205,7 @@ class Pynomicproject:
 
         Returns
         -------
-            dataframe with the new variables.
+            geodataframe.
         """
 
         def _calculate_GLCM(df, angles, distances, bands):
@@ -326,7 +326,7 @@ class Pynomicproject:
         max_val=75,
         to_data=False,
     ):
-        """Extracts the green and non-green pixels from each image.
+        """Extracts the green and non-green pixels from each image HSL.
 
         Parameters
         ----------
@@ -338,10 +338,14 @@ class Pynomicproject:
             name of the column that contains the green band.
         image_shape: tuple
             (top, bottom, left, right) indicates the area
+        min_val : str
+            in HUE range.
+        max_val :
+            in HUE range
 
         Returns
         -------
-            dataframe with the new index.
+            geodataframe.
         """
 
         def _calculate_grpx(
@@ -458,15 +462,15 @@ class Pynomicproject:
         ----------
         function :
             function that contains a formula and
-        returns a sigle value.
-        new_name : str
-            the name of the new feature.
+        returns a list.
+        new_name : list
+            a list with the name of the new features.
         to_data : bool
             merges it with the project data.
 
         Returns
         -------
-            dataframe with the new index.
+            geodataframe.
         """
         if isinstance(features_names, list):
             values_list = []
@@ -516,7 +520,7 @@ class Pynomicproject:
 
         Returns
         -------
-            Dataframe
+            Geodataframe
         """
 
         def _case_in(plot, col_val, numerical_date_col, threshold):
@@ -674,16 +678,16 @@ class Pynomicproject:
         return Pynomicplotter(self)
 
     def save(self, path):
-        """Function to save project as .zip file.
+        """Function to save project in a directory.
 
         Parameters
         ----------
         path:str
-            Name of the file ending with .zip.
+            Name of the directory.
 
         Returns
         -------
-            a zipped folder in the path given.
+            A directory with the Pynomicproject folders.
         """
         out_store = zarr.DirectoryStore(path + '/' + 'raw_data')
         zarr.copy_store(self.raw_data.store, out_store)
@@ -694,7 +698,6 @@ class Pynomicproject:
                     }
         with open(path+'/'+'obj_properties.json', mode='w') as outfile:
             json.dump(prop_dic, outfile)
-
 
         return
 
@@ -737,7 +740,6 @@ class Pynomicproject:
                 image = Image.fromarray(arrays)
                 image.save(image_path)
 
-    
 
     def get_senescens_Splines_predictions(
         self, band: str, threshold: float, to_data: bool = False, from_day=0
@@ -755,7 +757,7 @@ class Pynomicproject:
 
         Returns
         -------
-            Dataframe
+            Geodataframe
         """
 
         def _case_in(plot, col_val, numerical_date_col, threshold):
@@ -959,7 +961,7 @@ class Pynomicproject:
 
         Returns
         -------
-            Dataframe
+            Geodataframe
         """
 
         def _case_in(

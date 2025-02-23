@@ -294,9 +294,15 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
     """Process all the .tiff files in a folder.
 
     Args:
-        folder_path: folder that contains the .tiff files.
-        grid_path: path of the geojson grid.
-        bands_n: list like with the bands names ordered.
+        folder_path: str
+            folder that contains the .tiff files.
+        grid_path: str
+            path of the geojson grid.
+        col_id: str
+            unique column name identifier in the grid.
+        bands_n: str
+            list like with the bands names ordered.
+        
 
     Returns
     -------
@@ -347,7 +353,7 @@ def read_zarr(path):
     """Reads a zarr project previously saved from pynomics.
 
     Args
-        path: a path to the zarr folder
+        path: a path to the directory
 
     Returns
     -------
