@@ -302,7 +302,7 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
             unique column name identifier in the grid.
         bands_n: str
             list like with the bands names ordered.
-        
+
 
     Returns
     -------
@@ -359,18 +359,18 @@ def read_zarr(path):
     -------
         Pynomicproject object
     """
-    store = zarr.open_group(path + '/' + 'raw_data', mode="a")
+    store = zarr.open_group(path + "/" + "raw_data", mode="a")
 
-    data1 = gdp.read_file(path + '/' + 'ldata.shp')
+    data1 = gdp.read_file(path + "/" + "ldata.shp")
 
-    with open(path + '/' + 'obj_properties.json', 'r') as file:
+    with open(path + "/" + "obj_properties.json", "r") as file:
         prop = dict(json.load(file))
 
     return core.Pynomicproject(
         raw_data=store,
         ldata=data1.copy(),
-        n_dates=len(prop['dates']),
-        dates=prop['dates'],
-        n_bands=len(prop['bands']),
-        bands_name=prop['bands'],
+        n_dates=len(prop["dates"]),
+        dates=prop["dates"],
+        n_bands=len(prop["bands"]),
+        bands_name=prop["bands"],
     )

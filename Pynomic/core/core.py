@@ -373,19 +373,19 @@ class Pynomicproject:
                 )
             else:
                 red1 = dicmtx[red][
-                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
                 ]
                 red1 = cv2.normalize(
                     red1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
                 )
                 green1 = dicmtx[green][
-                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
                 ]
                 green1 = cv2.normalize(
                     green1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
                 )
                 blue1 = dicmtx[blue][
-                    im_shp[0]: im_shp[1], im_shp[2]: im_shp[3]
+                    im_shp[0] : im_shp[1], im_shp[2] : im_shp[3]
                 ]
                 blue1 = cv2.normalize(
                     blue1, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8U
@@ -689,19 +689,22 @@ class Pynomicproject:
         -------
             A directory with the Pynomicproject folders.
         """
-        out_store = zarr.DirectoryStore(path + '/' + 'raw_data')
+        out_store = zarr.DirectoryStore(path + "/" + "raw_data")
         zarr.copy_store(self.raw_data.store, out_store)
 
-        self.ldata.to_file(path + '/' + 'ldata.shp', driver='ESRI Shapefile')
-        prop_dic = {'dates': self.dates,
-                    'bands': self.bands_name,
-                    }
-        with open(path+'/'+'obj_properties.json', mode='w') as outfile:
+        self.ldata.to_file(path + "/" + "ldata.shp", driver="ESRI Shapefile")
+        prop_dic = {
+            "dates": self.dates,
+            "bands": self.bands_name,
+        }
+        with open(path + "/" + "obj_properties.json", mode="w") as outfile:
             json.dump(prop_dic, outfile)
 
         return
 
-    def save_indiv_plots_images(self, folder_path, fun, identification_col, file_type:str):
+    def save_indiv_plots_images(
+        self, folder_path, fun, identification_col, file_type: str
+    ):
         """Creates as many folders as dates in path provided and saves the plot images.
 
         Parameters
@@ -733,13 +736,12 @@ class Pynomicproject:
                         self.ldata["id"] == p, identification_col
                     ].unique()[0]
                 )
-                if file_type  == 'tiff':
+                if file_type == "tiff":
                     image_path = os.path.join(path, name + ".tiff")
-                if file_type == 'jpg':
+                if file_type == "jpg":
                     image_path = os.path.join(path, name + ".jpg")
                 image = Image.fromarray(arrays)
                 image.save(image_path)
-
 
     def get_senescens_Splines_predictions(
         self, band: str, threshold: float, to_data: bool = False, from_day=0
@@ -761,8 +763,7 @@ class Pynomicproject:
         """
 
         def _case_in(plot, col_val, numerical_date_col, threshold):
-            plot = plot.sort_values(
-                numerical_date_col, ascending=True)
+            plot = plot.sort_values(numerical_date_col, ascending=True)
             x = plot[numerical_date_col].values
             y = plot[col_val].values
 
