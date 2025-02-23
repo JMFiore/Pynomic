@@ -12,7 +12,7 @@ version = "0.0.1"
 authors = [{name = "Fiore Juan M.", email = "fiorejuanm@mi.unc.edu.ar"}]
 license = {text = "The MIT License"}
 readme = "README.md"
-description = "Implementation of Drone images analisys"
+description = "Python library for data extraction from drone orthomosaics in plant breeding trials"
 keywords = ["UAV", "RGB", "Multispectral", "Pipeline"]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
