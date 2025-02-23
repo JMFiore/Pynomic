@@ -12,15 +12,15 @@ This data needs to be processed in order to extract usefull information. Hence P
 through time, estimate the date of a event given a certain threshold, automaticaly calculate RGB and Multispectra vegetation indices while at the same time reducing the need for RAM. Storing only the relevant information. Thus reducing the computation resources.
 
 ## Requirements
-You need Python 3.9+ to run Pynomic
+You need Python 3.9+ to run Pynomic.
 
 ## Basic install
-You can find Pynomic in PyPl. The standard installation
+You can find Pynomic in PyPl. The standard installation.
 
     $ pip install Pynomic
 
 
 ## Developer Installation 
-Clone this repo. Move to the file and execute
+Clone this repo. Move to the file and execute:
 
     $ pip install e .
