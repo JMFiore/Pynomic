@@ -47,11 +47,12 @@ class Pynomicplotter:
 
         Parameters
         ----------
-            band_name: str | the name of the band in ldata to plot.
-
-            n_id: int | id of the plot.
-
-            days: bool| default False converts the x axis.
+            band_name:str
+                the name of the band in ldata to plot.
+            n_id:str
+                id of the plot.
+            days:bool
+                default False converts the x axis.
 
         Returns
         -------
@@ -101,17 +102,21 @@ class Pynomicplotter:
 
         Parameters
         ----------
-            band_name: str | the name of the band in ldata to plot.
+            band_name:str
+                the name of the band in ldata to plot.
+            n_id:str
+                id of the plot.
+            days:bool
+                default False converts the x axis.
 
-            n_id: int | id of the plot.
-
-            days: bool| default False converts the x axis.
-
-            function: a function that takes as input the array of the plots
+            function:function
+                a function that takes as input the array of the plots
                 and returns an array to be ploted.
 
-            vmin: int | minimum value to be plotted.
-            vmax: int | maximium value to be plotted.
+            vmin:int
+                minimum value to be plotted.
+            vmax:int
+                maximium value to be plotted.
 
         Returns
         -------
@@ -209,23 +214,26 @@ class Pynomicplotter:
 
         Parameters
         ----------
-            band_name: str | the name of the band in ldata to plot.
-
-            n_id: int | id of the plot.
-
-            Red: str | red band name
-
-            Green: str | green band name
-
-            Blue: str | blue band name
-
-            days: bool| default False converts the x axis.
+            band_name:str
+                the name of the band in ldata to plot.
+            n_id:str
+                id of the plot.
+            Red:str
+                red band name
+            Green:str
+                green band name
+            Blue:str
+                blue band name
+            days:bool
+                default False converts the x axis.
 
             function: a function that takes as input the array of the plots
                 and returns an array to be ploted.
 
-            vmin: int | minimum value to be plotted.
-            vmax: int | maximium value to be plotted.
+            vmin:int
+                minimum value to be plotted.
+            vmax:int
+                maximium value to be plotted.
 
         Returns
         -------

@@ -62,8 +62,10 @@ def _read_grid(gpath, col_id: str):
 def _read_grid2(gpath, col_id: str):
     """Reads a geojson and shape files.
 
-    Args:
-        gpath: grid path to a geojson or shape file.
+    Parameters
+    ----------
+        gpath:str
+            grid path to a geojson or shape file.
 
     Returns
     -------
@@ -81,8 +83,10 @@ def _read_grid2(gpath, col_id: str):
 def _read_grids(gpath, col_id: str):
     """Reads a geojson file or shape file.
 
-    Args:
-        gpath: grid path to a geojson file.
+    Parameters
+    ----------
+        gpath:str
+            grid path to a geojson file.
 
     Returns
     -------
@@ -110,12 +114,14 @@ def _get_dataframe_from_json(path_gjson):
 def _get_tiff_files(fold_path):
     """Makes a list of tiff files of a folder path.
 
-    Args:
-        fold_path: folder path with the tiff files.
+    Parameters
+    ----------
+        fold_path:str
+            folder path with the tiff files.
 
     Returns
     -------
-        a list with the tiff files.
+        list
     """
     tiff_list = []
     for file in os.listdir(fold_path):
@@ -129,10 +135,13 @@ def _get_tiff_files(fold_path):
 def auto_fit_image(mtx, hbuffer=2, wbuffer=2):
     """Takes an array and returns the crooping and angle parameters.
 
-    Args
-        mtx: np.array
-        hbuffer: int. height buffer.
-        wbuffer: int. with buffer.
+    Parameters
+    ----------
+        mtx:np.array
+        hbuffer:int
+            height buffer
+        wbuffer:int
+            with buffer
 
     Returns
     -------
@@ -173,9 +182,12 @@ def auto_fit_image(mtx, hbuffer=2, wbuffer=2):
 def _extract_bands_from_raster(raster_data, multiplot, alpha_idx=-1):
     """Separates the bands for the maks.
 
-    Args:
-        raster_data: a masked area of intrest(aoi).
-        multiplot: a multiplot obj form sapely.
+    Parameters
+    ----------
+        raster_data:np.array
+            a masked area of intrest(aoi).
+        multiplot:Multiplot
+            a multiplot obj form sapely.
 
     Returns
     -------
@@ -198,10 +210,14 @@ def _extract_bands_from_raster(raster_data, multiplot, alpha_idx=-1):
 def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
     """Extracts the values from the raster file segregating each band and plot.
 
-    Args:
-        raster_path: path to raster file.
-        grid_path: path to gird.
-        bands_n:a list of the bands names and order.
+    Parameters
+    ----------
+        raster_path:str
+            path to raster file.
+        grid_path:str
+            path to gird.
+        bands_n:list
+            a list of the bands names and order.
 
     Returns
     -------
@@ -293,14 +309,15 @@ def extract_raster_data(raster_path, grid_path, col_id: str, bands_n=None):
 def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
     """Process all the .tiff files in a folder.
 
-    Args:
-        folder_path: str
+    Parameters
+    ----------
+        folder_path:str
             folder that contains the .tiff files.
-        grid_path: str
+        grid_path:str
             path of the geojson grid.
-        col_id: str
-            unique column name identifier in the grid.
-        bands_n: str
+        col_id:str
+            unique column name identifier from the grid.
+        bands_n:str
             list like with the bands names ordered.
 
 
@@ -352,9 +369,10 @@ def process_stack_tiff(folder_path, grid_path, col_id: str, bands_n=None):
 def read_zarr(path):
     """Reads a zarr project previously saved from pynomics.
 
-    Args
-        path: a path to the directory
-
+    Parameters
+    ----------
+        path:str
+            a path to the directory
     Returns
     -------
         Pynomicproject object

@@ -37,10 +37,10 @@ class Pynomicproject:
 
     Parameters
     ----------
-    raw_data : zarr.hierarchy.Group
+    raw_data :zarr.hierarchy.Group
         contains all the data.
 
-    ldata : Pandas Dataframe
+    ldata :Pandas Dataframe
         contains all the procesed data.
     """
 
@@ -56,7 +56,7 @@ class Pynomicproject:
 
         Parameters
         ----------
-        k : str
+        k :str
             Attribute name.
 
         Returns
@@ -123,15 +123,15 @@ class Pynomicproject:
 
         Parameters
         ----------
-        Red: str
+        Red:str
             name of the column that contains the red band.
-        Blue: str
+        Blue:str
             name of the column that contains the blue band.
-        Green: str
+        Green:str
             name of the column that contains the green band.
-        Red_edge: str
+        Red_edge:str
             name of the column that contains the Red edge band.
-        NIR: str
+        NIR:str
             name of the column that contains thee NIR band.
 
         Returns
@@ -198,9 +198,9 @@ class Pynomicproject:
 
         Parameters
         ----------
-        distances: list
+        distances:list
             list of distances to work usaly 2 or 3 .
-        algles: lsit
+        algles:lsit
             list of angles to work.
 
         Returns
@@ -330,17 +330,17 @@ class Pynomicproject:
 
         Parameters
         ----------
-        Red: str
+        Red:str
             name of the column that contains the red band.
-        Blue: str
+        Blue:str
             name of the column that contains the blue band.
-        Green: str
+        Green:str
             name of the column that contains the green band.
-        image_shape: tuple
+        image_shape:tuple
             (top, bottom, left, right) indicates the area
-        min_val : str
+        min_val:int
             in HUE range.
-        max_val :
+        max_val:int
             in HUE range
 
         Returns
@@ -460,12 +460,12 @@ class Pynomicproject:
 
         Parameters
         ----------
-        function :
+        function :function
             function that contains a formula and
-        returns a list.
-        new_name : list
-            a list with the name of the new features.
-        to_data : bool
+            returns a list.
+        new_name :list
+            name of the new features.
+        to_data :bool
             merges it with the project data.
 
         Returns
