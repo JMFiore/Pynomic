@@ -6,6 +6,7 @@ recursive-include Pynomic *.py
 
 exclude tox.ini
 exclude .header-template
+exclude .readthedocs.yml
 
 recursive-exclude docs *
 recursive-exclude tests *
