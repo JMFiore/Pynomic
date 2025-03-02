@@ -50,10 +50,6 @@ def test_image_timeline():
     assert atb.get_title() == ""
     assert atb.get_ylabel() == "VDVI"
     assert atb.get_yscale() == "linear"
-    # assert atb.get_yticks()[1] == np.float64(0.025)
-    # assert atb.get_xticks()[1] == np.float64(17765.0)
-    # assert atb.get_ylim()[1] == np.float64(0.1723043510875103)
-    # assert atb.get_xlim()[1] == np.float64(17801.05)
 
     atd, atbd = pyt.plot.image_timeline("VDVI", "A3", VDVI_inex2, days=True)
     assert atbd.get_xlabel() == "Flight days"
@@ -84,10 +80,6 @@ def test_timeline():
     assert axis.get_title() == "VDVI - Plot Id A3"
     assert axis.get_ylabel() == "VDVI"
     assert axis.get_yscale() == "linear"
-    # assert axis.get_yticks()[1] == np.float64(-0.05)
-    # assert axis.get_xticks()[1] == np.float64(17765.0)
-    # assert axis.get_ylim()[0] == np.float64(0.00018280194085929305)
-    # assert axis.get_xlim()[0] == np.float64(-889.95)
 
     axis_days = pyt.plot.timeline("VDVI", "A3", days=True)
     assert axis_days.get_xlabel() == "Flight days"
