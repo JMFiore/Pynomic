@@ -55,7 +55,7 @@ def test_Pynomicporject_obj():
     assert pyt.ldata.columns[3] == "red"
     assert pyt.ldata.columns[4] == "green"
     assert pyt.ldata.columns[5] == "blue"
-    assert "20180917" in pyt.dates[0]
+    assert "20180917" in pyt.dates
     assert pyt.n_bands == 3
     assert pyt.bands_name[0] == "red"
     assert pyt.bands_name[1] == "green"
