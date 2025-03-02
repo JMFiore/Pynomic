@@ -4,7 +4,7 @@
 ![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
 
 
-*Pynomic* is a Python library that allows you to fast extract data from aereal images from plant breeding trials in a simple, trackable and automatized way.
+*Pynomic* is a Python library designed to quickly and efficiently extract data from aerial images of plant breeding trials, offering a simple, automated, and trackable solution.
 
 ## Motivation
 The use of drones in agriculture is beeing widely spread due to its versatility from plant treatmenta aplication, sowing, scouting crops, etc. In plant breeding it allows to capture large amounts of Phenomic data with less human effort.
