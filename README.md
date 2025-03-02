@@ -3,8 +3,8 @@
 ![logo](https://github.com/JMFiore/Pynomic/blob/main/docs/Logo/pynomics_logo1.svg)
 
 
-[![Documentation Status](https://readthedocs.org/projects/Pynomic/badge/?version=latest)](https://pynomic.readthedocs.io/en/latest/?badge=latest)
 ![Tests](https://github.com/JMFiore/Pynomic/actions/workflows/testing.yml/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/Pynomic/badge/?version=latest)](https://pynomic.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
 
