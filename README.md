@@ -1,6 +1,6 @@
 # Pynomic
 
-![logo](https://raw.githubusercontent.com/JMFiore/Pynomic/blob/main/docs/_static/pynomic_logo.svg)
+![logo](https://raw.githubusercontent.com/JMFiore/Pynomic/master/docs/_static/pynomic_logo.svg)
 
 
 ![Tests](https://github.com/JMFiore/Pynomic/actions/workflows/testing.yml/badge.svg)
