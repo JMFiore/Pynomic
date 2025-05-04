@@ -23,6 +23,7 @@ Contents
 
    notebook/Quick_installation.ipynb
    notebook/Tutorial_1.ipynb
+   notebook/Tutorial_2.ipynb
 
 
 
