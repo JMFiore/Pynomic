@@ -38,6 +38,7 @@ dependencies = [
     "matplotlib",
     "shapely",
     "pillow",
+    "numecodecs<0.16.0",
     "zarr==2.18.2",
     "scikit-learn",
     "opencv-python",
