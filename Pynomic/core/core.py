@@ -910,7 +910,7 @@ class Pynomicproject:
                 plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
                 < threshold
             ):
-                print(f"Plot Id: {p} range is lower than threshold ")
+                print(f"Plot Id: {p} threshold is upper than range ")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
                     plot, col_val, numerical_date_col, threshold
                 )
@@ -918,7 +918,7 @@ class Pynomicproject:
 
             # Third case if threshold is lower than the range in col_val
             elif plot[col_val].min() >= threshold:
-                print(f"Plot Id: {p} range is Higher than threshold ")
+                print(f"Plot Id: {p} threshold is lower than range ")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
                     plot, col_val, numerical_date_col, threshold
                 )
@@ -1063,23 +1063,24 @@ class Pynomicproject:
                 df1.loc[df1[plot_id_col] == p, "in_range"] = "IN"
 
             # Second case if threshold is upper than the range in col_val
+            # takes the first highes values and compares them.
             elif (
                 plot[col_val].values[: int((len(plot[col_val]) / 2))].max()
                 < threshold
             ):
-                print(f"Plot Id: {p} range is lower than threshold ")
+                print(f"Plot Id: {p} threshold is upper than range ")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_upper(
                     plot, col_val, numerical_date_col, threshold
                 )
-                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
 
             # Third case if threshold is lower than the range in col_val
             elif plot[col_val].min() >= threshold:
-                print(f"Plot Id: {p} range is Higher than threshold ")
+                print(f"Plot Id: {p} threshold is lower than range")
                 df1.loc[df1[plot_id_col] == p, "dpred"] = _case_lower(
                     plot, col_val, numerical_date_col, threshold
                 )
-                df1.loc[df1[plot_id_col] == p, "in_range"] = "upper"
+                df1.loc[df1[plot_id_col] == p, "in_range"] = "lower"
 
         if to_data:
             self.ldata = self.ldata.merge(
