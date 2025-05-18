@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Pynomic"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{name = "Fiore Juan M.", email = "fiorejuanm@mi.unc.edu.ar"}]
 license = {text = "The MIT License"}
 readme = "README.md"
