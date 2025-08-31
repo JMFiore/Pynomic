@@ -15,4 +15,5 @@ exclude Pynomic_scheme.png
 recursive-exclude docs *
 recursive-exclude tests *
 recursive-exclude add_on *
+recursive-exclude paper *
 
