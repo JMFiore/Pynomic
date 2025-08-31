@@ -4,7 +4,7 @@ include pyproject.toml
 include paper.md
 include paper.pdf
 include paper.bib
-include pynomic_scheme.png
+include Pynomic_scheme.png
 
 recursive-include Pynomic *.py
 
