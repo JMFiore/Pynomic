@@ -1,6 +1,6 @@
 
 ---
-title: 'Pynomic: Data extraction image library for orthomosaic in plant breeding trials'
+title: 'Pynomic: Data extraction library for orthomosaic images in plant breeding trials'
 tags: 
   -Pyhton
   -Phenomics
