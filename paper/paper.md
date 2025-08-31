@@ -2,24 +2,24 @@
 ---
 title: 'Pynomic: Data extraction library for orthomosaic images in plant breeding trials'
 tags: 
-  -Pyhton
-  -Phenomics
-  -High Throughtput phenotyping
-  -sencence
-  -Unmanned Aerial Vehicles
+  - Python
+  - Phenomics
+  - High Throughput Phenotyping
+  - senescence
+  - Unmanned Aerial Vehicles
 authors:
-  -name: Juan Manuel Fiore
-   orcid: 0009-0009-3421-1299
-   correspondig: true
-   affiliation: 1
-  -name: Cecilia Bruno
-   orcid: 0000-0002-3674-7128
-   affiliation: "1, 2"
+  - name: Juan Manuel Fiore
+    orcid: 0009-0009-3421-1299
+    corresponding: true
+    affiliation: 1
+  - name: Cecilia Bruno
+    orcid: 0000-0002-3674-7128
+    affiliation: "1, 2"
 affiliations:
-  -name: Universidad Nacional de Córdoba (UNC)
-   index: 1
-  -name: Cátedra de Estadistica y Biometría.
-   index: 2
+  - name: Universidad Nacional de Córdoba (UNC)
+    index: 1
+  - name: Cátedra de Estadistica y Biometría.
+    index: 2
 
 bibliography: paper.bib
 ---
