@@ -7,7 +7,7 @@
 [![Documentation Status](https://readthedocs.org/projects/pynomic/badge/?version=latest)](https://pynomic.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/pynomic?period=total&units=ABBREVIATION&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/pynomic)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/pynomic?period=total&units=ABBREVIATION&left_color=BLACK&right_color=BRIGHTGREEN&left_text=downloads)](https://pepy.tech/projects/pynomic)
 
 
 *Pynomic* is a Python library designed to quickly and efficiently extract data from aerial images of plant breeding trials, offering a simple, automated, and trackable solution.
@@ -30,4 +30,5 @@ You can find Pynomic in PyPl. The standard installation.
 Clone this repo. Move to the file and execute:
 
     $ pip install e .
+
 
