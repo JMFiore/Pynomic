@@ -6,7 +6,7 @@ pages = {184-192},
 year = {2017},
 note = {38 Biotic interactions 2017},
 issn = {1369-5266},
-doi = {https://doi.org/10.1016/j.pbi.2017.05.006},
+doi = {10.1016/j.pbi.2017.05.006},
 url = {https://www.sciencedirect.com/science/article/pii/S1369526617300675},
 author = {Nadia Shakoor and Scott Lee and Todd C Mockler},
 abstract = {Effective implementation of technology that facilitates accurate and high-throughput screening of thousands of field-grown lines is critical for accelerating crop improvement and breeding strategies for higher yield and disease tolerance. Progress in the development of field-based high throughput phenotyping methods has advanced considerably in the last 10 years through technological progress in sensor development and high-performance computing. Here, we review recent advances in high throughput field phenotyping technologies designed to inform the genetics of quantitative traits, including crop yield and disease tolerance. Successful application of phenotyping platforms to advance crop breeding and identify and monitor disease requires: (1) high resolution of imaging and environmental sensors; (2) quality data products that facilitate computer vision, machine learning and GIS; (3) capacity infrastructure for data management and analysis; and (4) automated environmental data collection. Accelerated breeding for agriculturally relevant crop traits is key to the development of improved varieties and is critically dependent on high-resolution, high-throughput field-scale phenotyping technologies that can efficiently discriminate better performing lines within a larger population and across multiple environments.}
@@ -18,7 +18,7 @@ journal = {The Plant Phenome Journal},
 volume = {2},
 number = {1},
 pages = {180009},
-doi = {https://doi.org/10.2135/tppj2018.12.0009},
+doi = {10.2135/tppj2018.12.0009},
 url = {https://acsess.onlinelibrary.wiley.com/doi/abs/10.2135/tppj2018.12.0009},
 eprint = {https://acsess.onlinelibrary.wiley.com/doi/pdf/10.2135/tppj2018.12.0009},
 abstract = {Core Ideas Interdisciplinary efforts in high-throughput field phenotyping Linking proximal and remote field phenotyping Cyberinfrastructure for high-throughput field phenotyping Plant breeding and agronomy are labor-intensive sciences, and the success of these disciplines is critical to meet planetary challenges of food and water security for the world's growing population. Recent gains in sensor technology, remote sensing, robotics and autonomy, big data analytics, and genomics are being adopted by agricultural scientists for high-throughput phenotyping, precision agriculture, and crop-scouting platforms. These technological gains are ushering in an era of digital agriculture that should greatly enhance the capacity of plant breeders and agronomists. This report encompasses the priorities and recommendations that emerged from two USDA National Institute of Food and Agriculture (NIFA)-funded Big Data Driven Agriculture workshops held on 26–27 Feb. 2018 in Arlington, VA. The objectives of the workshops were to bring together diverse subject-matter experts in the represented disciplines of plant breeding, machine learning, remote sensing, and big data infrastructure and analytics to (i) explore how large and comprehensive datasets in plant breeding, genomics, remote sensing, and analytics will benefit agriculture; (ii) discuss strategies for creating a successful field phenotyping campaign and to determine protocols for the collection and analysis of agricultural big data; (iii) consider how to best engage the broader community of public and private plant breeders and agronomists to determine additional challenges, make wider use of the data, and ensure application of standardized methods to other datasets; and (iv) generate a report describing cross-cutting short- and long-term funding needs for continued success in this domain.},
@@ -58,7 +58,7 @@ journal = {The Plant Phenome Journal},
 volume = {4},
 number = {1},
 pages = {e20018},
-doi = {https://doi.org/10.1002/ppj2.20018},
+doi = {10.1002/ppj2.20018},
 url = {https://acsess.onlinelibrary.wiley.com/doi/abs/10.1002/ppj2.20018},
 eprint = {https://acsess.onlinelibrary.wiley.com/doi/pdf/10.1002/ppj2.20018},
 abstract = {Abstract Estimating the date of maturity of soybean breeding field plots is necessary for breeding line characterization and for informing yield comparisons among varieties. The main drawback of visually dating soybean maturity is the sheer scale of note recording entailed and the frequency at which these notes need to be taken. The overall aim of this study was to build upon prior work in using low-cost UAS-based RGB cameras to estimate soybean maturity date by examining the effect of vegetation index, summary statistic of the pixel values from each region of interest (plot), statistical model, and flight frequency. Maturity dates collected from five environments with 53 experimental trials (4,415 plots) were both visually dated and imaged using a RGB camera carried by a UAS. Using the mean greenness leaf index on each plot combined with LOESS regression, we achieved high correlations between ground and UAS-based estimates (r = 0.84–0.97). Precision, quantified by broad-sense heritability estimates, was greater for UAS-based dates in 29 of 53 field trials, and nearly equivalent in 11 more field trials. We found that 54\% of the significant deviations between ground and UAS-based estimates were caused by inaccurate UAS-based estimates, while errors in the ground-based estimates accounted for 46\% of the deviations. Reasons for these inaccurate estimates were attributed to lodging, presence of weeds, low germination, and within-line genetic heterogeneity in the plots. A detailed description of the analysis pipeline, a user-friendly R script, and all of the images and ground data have been made publicly available to help other researchers and breeders test and adopt these methods.},
@@ -70,5 +70,81 @@ year = {2021}
   year      = {2024},
   version   = {2.18.2},
   publisher = {Python Package Index},
-  url       = {https://pypi.org/project/zarr/}
+  url       = {https://pypi.org/project/zarr/},
+  doi       = {10.5281/zenodo.3773449}
+}
+
+@article{fieldimager,
+author = {Matias, Filipe Inácio and Caraza-Harter, Maria V. and Endelman, Jeffrey B.},
+title = {FIELDimageR: An R package to analyze orthomosaic images from agricultural field trials},
+journal = {The Plant Phenome Journal},
+volume = {3},
+number = {1},
+pages = {e20005},
+doi = {10.1002/ppj2.20005},
+url = {https://acsess.onlinelibrary.wiley.com/doi/abs/10.1002/ppj2.20005},
+eprint = {https://acsess.onlinelibrary.wiley.com/doi/pdf/10.1002/ppj2.20005},
+abstract = {Abstract Remote sensing is revolutionizing the phenotyping of agricultural field trials, but for many researchers, the extraction of plot-level results is a bottleneck. We have developed the R package FIELDimageR as a user-friendly tool to analyze orthomosaic images containing many plots. The basic workflow involves cropping and rotating the image, followed by the creation of a shapefile based on the experimental design. The package includes functions to calculate the number of plants per plot, canopy cover percentage, vegetation indices, and plant height. FIELDimageR is publicly available as a GitHub repository (https://github.com/filipematias23/FIELDimageR).},
+year = {2020}
+}
+
+@Article{wang_easyidp_2021,
+AUTHOR = {Wang, Haozhou and Duan, Yulin and Shi, Yun and Kato, Yoichiro and Ninomiya, Seish and Guo, Wei},
+TITLE = {EasyIDP: A Python Package for Intermediate Data Processing in UAV-Based Plant Phenotyping},
+JOURNAL = {Remote Sensing},
+VOLUME = {13},
+YEAR = {2021},
+NUMBER = {13},
+ARTICLE-NUMBER = {2622},
+URL = {https://www.mdpi.com/2072-4292/13/13/2622},
+ISSN = {2072-4292},
+DOI = {10.3390/rs13132622}
+}
+
+@software{QGIS_software,
+  author       = {Nyall Dawson and
+                  Jürgen Fischer and
+                  Matthias Kuhn and
+                  Alessandro Pasotti and
+                  mhugent and
+                  Denis Rouzaud and
+                  Alexander Bruy and
+                  Tim Sutton and
+                  Martin Dobias and
+                  Mathieu Pellerin and
+                  Even Rouault and
+                  Víctor Olaya and
+                  Paul Blottiere and
+                  Werner Macho and
+                  Radim Blazek and
+                  Loïc Bartoletti and
+                  Gary Sherman and
+                  Harrissou Sant-anna and
+                  Julien Cabieces and
+                  Nathan Woodrow and
+                  signedav and
+                  rldhont and
+                  Stefanos Natsis and
+                  Larry Shaffer and
+                  Nedjima Belgacem and
+                  Jean Felder and
+                  Sandro Santilli and
+                  Salvatore Larosa and
+                  Sandro Mani and
+                  Borys Jurgiel},
+  title        = {qgis/QGIS: 4.0.0},
+  month        = mar,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {final-4\_0\_0},
+  doi          = {10.5281/zenodo.18889261},
+  url          = {https://doi.org/10.5281/zenodo.18889261},
+}
+
+@software{Arcgis_software,
+  author       = {ESRI},
+  title        = {ArcGIS Desktop: Release 10.8},
+  year         = 2023,
+  version      = {10.8},
+  location     = {Redlands, CA: Environmental Systems Research Institute.}
 }
