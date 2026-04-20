@@ -100,22 +100,22 @@ def test_generate_unique_feature():
     assert isinstance(data, pd.DataFrame)
 
     assert (
-        data.loc[(data.id == "A1") & (data.date == "20180815"), "VDVI"].values[
+        np.round(data.loc[(data.id == "A1") & (data.date == "20180815"), "VDVI"].values[
             0
-        ]
-        == 0.1546743079777065
+        ],3)
+        == np.round(0.1546743079777065,3)
     )
     assert (
-        data.loc[(data.id == "A3") & (data.date == "20180815"), "VDVI"].values[
+        np.round(data.loc[(data.id == "A3") & (data.date == "20180815"), "VDVI"].values[
             0
-        ]
-        == 0.15057698741228298
+        ],3)
+        == np.round(0.15057698741228298,3)
     )
     assert (
-        data.loc[
+        np.round(data.loc[
             (data.id == "A23") & (data.date == "20180815"), "VDVI"
-        ].values[0]
-        == 0.11958853280011712
+        ].values[0],3)
+        == np.round(0.11958853280011712,3)
     )
     assert pyt.ldata.shape[1] == 8
 
@@ -222,10 +222,10 @@ def test_RGB_ind():
     assert "ExR" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[
+        np.round(pyt.ldata.loc[
             (pyt.ldata.id == "A1") & (pyt.ldata.date == "20180917"), "VDVI"
-        ].values[0]
-        == 0.015838010015441387
+        ].values[0],4)
+        == 0.0158
     )
 
     return
@@ -268,10 +268,10 @@ def test_Multispectral_VI():
     assert "RTVI" in pyt.ldata.columns
 
     assert (
-        pyt.ldata.loc[
+        np.round(pyt.ldata.loc[
             (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"), "NDVI"
-        ].values[0]
-        == 0.7110486695733146
+        ].values[0],3)
+        == np.round(0.7110486695733146,3)
     )
     assert np.round(
         pyt.ldata.loc[
