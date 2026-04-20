@@ -23,7 +23,6 @@ import pytest
 
 import zarr
 
-
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
@@ -99,27 +98,24 @@ def test_generate_unique_feature():
 
     assert isinstance(data, pd.DataFrame)
 
-    assert (
-        np.round(
-            data.loc[(data.id == "A1") & (data.date == "20180815"), "VDVI"].values[
+    assert np.round(
+        data.loc[(data.id == "A1") & (data.date == "20180815"), "VDVI"].values[
             0
-        ],3)
-        == np.round(0.1546743079777065, 3)
-    )
-    assert (
-        np.round(
-            data.loc[(data.id == "A3") & (data.date == "20180815"), "VDVI"].values[
+        ],
+        3,
+    ) == np.round(0.1546743079777065, 3)
+    assert np.round(
+        data.loc[(data.id == "A3") & (data.date == "20180815"), "VDVI"].values[
             0
-        ],3)
-        == np.round(0.15057698741228298, 3)
-    )
-    assert (
-        np.round(
-            data.loc[
+        ],
+        3,
+    ) == np.round(0.15057698741228298, 3)
+    assert np.round(
+        data.loc[
             (data.id == "A23") & (data.date == "20180815"), "VDVI"
-        ].values[0],3)
-        == np.round(0.11958853280011712, 3)
-    )
+        ].values[0],
+        3,
+    ) == np.round(0.11958853280011712, 3)
     assert pyt.ldata.shape[1] == 8
 
     pyt.generate_unique_feature(VDVI_index, ["VDVI"], to_data=True)
@@ -227,8 +223,10 @@ def test_RGB_ind():
     assert (
         np.round(
             pyt.ldata.loc[
-            (pyt.ldata.id == "A1") & (pyt.ldata.date == "20180917"), "VDVI"
-        ].values[0], 4)
+                (pyt.ldata.id == "A1") & (pyt.ldata.date == "20180917"), "VDVI"
+            ].values[0],
+            4,
+        )
         == 0.0158
     )
 
@@ -271,13 +269,12 @@ def test_Multispectral_VI():
     assert "RDVI" in pyt.ldata.columns
     assert "RTVI" in pyt.ldata.columns
 
-    assert (
-        np.round(
-            pyt.ldata.loc[
+    assert np.round(
+        pyt.ldata.loc[
             (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"), "NDVI"
-        ].values[0],3)
-        == np.round(0.7110486695733146, 3)
-    )
+        ].values[0],
+        3,
+    ) == np.round(0.7110486695733146, 3)
     assert np.round(
         pyt.ldata.loc[
             (pyt.ldata.id == "A1") & (pyt.ldata.date == "20210628"), "RTVI"
